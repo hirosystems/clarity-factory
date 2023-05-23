@@ -7,7 +7,7 @@ export default function t(
 
   /* IF..ENDIF */
   const conditions = result.matchAll(
-    /[ \t]*{{if ([a-zA-Z]+)}}\n+(.*)\s*{{endif}}/g
+    /[ \t]*{{if ([a-zA-Z-]+)}}\n+(.*)\s*{{endif}}/g
   );
   for (const condition of conditions) {
     if (condition) {

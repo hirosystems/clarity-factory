@@ -10,9 +10,9 @@
       "type": "string",
       "description": "Name of the NFT"
     },
-    "contractOwner": {
+    "contract-owner": {
       "type": "object",
-      "title": "Contract Owner",
+      "title": "Contract owner",
       "description": "Stacks address allowed to perform changes to the NFT contracts settings",
       "required": ["value"],
       "additionalProperties": false,
@@ -21,9 +21,9 @@
         "updatable": { "type": "boolean" }
       }
     },
-    "ustxPrice": {
+    "ustx-price": {
       "type": "object",
-      "title": "uSTX Price",
+      "title": "uSTX price",
       "description": "Mint price in USTX. `undefined` to disable mint in STX",
       "required": ["value"],
       "additionalProperties": false,
@@ -32,9 +32,9 @@
         "updatable": { "type": "boolean" }
       }
     },
-    "nycPrice": {
+    "nyc-price": {
       "type": "object",
-      "title": "NYC Price",
+      "title": "NYC price",
       "description": "Mint price in NYC Citycoins. `undefined` to disable mint in NYC",
       "required": ["value"],
       "additionalProperties": false,
@@ -43,9 +43,9 @@
         "updatable": { "type": "boolean" }
       }
     },
-    "miaPrice": {
+    "mia-price": {
       "type": "object",
-      "title": "MIA Price",
+      "title": "MIA price",
       "description": "Mint price in MIA Citycoins. `undefined` to disable mint in MIA",
       "required": ["value"],
       "additionalProperties": false,
@@ -54,7 +54,7 @@
         "updatable": { "type": "boolean" }
       }
     },
-    "mintLimit": {
+    "mint-limit": {
       "type": "object",
       "title": "Mint limit",
       "description": "Mint limit per STX address. Leave empty to disable.",
@@ -69,7 +69,7 @@
         "updatable": { "type": "boolean" }
       }
     },
-    "allowList": {
+    "allow-list": {
       "type": "object",
       "description": "Early bird access. Leave empty to disable this feature",
       "required": ["addresses"],
@@ -82,7 +82,7 @@
             "type": "string"
           }
         },
-        "allowAllAtBlockHeight": {
+        "allow-all-at-block-height": {
           "type": "object",
           "title": "Allow all at block height",
           "description": "Allow everyone to mint from this block height. Leave empty to disable mint for all",

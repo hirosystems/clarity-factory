@@ -1,3 +1,5 @@
+{{update-settings-functions}}
+
 (define-read-only (get-last-token-id)
   (ok (var-get last-token-id))
 )
@@ -22,7 +24,7 @@
     (
       (token-id (+ (var-get last-token-id) u1))
     )
-    {{if allowList}}
+    {{if allow-list}}
     (asserts! (is-some (map-get? allow-list tx-sender)) ERR_UNAUTHORIZED)
     {{endif}}
 
@@ -33,4 +35,4 @@
 )
 
 
-{{whitelist}}
+{{allow-list-addresses}}

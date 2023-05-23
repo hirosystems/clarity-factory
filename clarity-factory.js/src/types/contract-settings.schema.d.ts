@@ -11,20 +11,20 @@ export interface NFTTemplateSettings {
    * Name of the NFT
    */
   name: string;
-  contractOwner?: ContractOwner;
-  ustxPrice?: USTXPrice;
-  nycPrice?: NYCPrice;
-  miaPrice?: MIAPrice;
-  mintLimit?: MintLimit;
+  "contract-owner"?: ContractOwner;
+  "ustx-price"?: USTXPrice;
+  "nyc-price"?: NYCPrice;
+  "mia-price"?: MIAPrice;
+  "mint-limit"?: MintLimit;
   /**
    * Early bird access. Leave empty to disable this feature
    */
-  allowList?: {
+  "allow-list"?: {
     /**
      * List of Stacks addresses
      */
     addresses: string[];
-    allowAllAtBlockHeight?: AllowAllAtBlockHeight;
+    "allow-all-at-block-height"?: AllowAllAtBlockHeight;
   };
 }
 /**

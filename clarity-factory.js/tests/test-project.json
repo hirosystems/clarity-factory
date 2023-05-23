@@ -1,11 +1,14 @@
 {
   "$schema": "../src/cases/nft/contract-settings.schema.json",
   "name": "awesome-nft",
-  "contractOwner": { "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9" },
-  "ustxPrice": { "value": 100, "updatable": true },
-  "allowList": {
+  "contract-owner": {
+    "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9",
+    "updatable": true
+  },
+  "ustx-price": { "value": 100, "updatable": true },
+  "allow-list": {
     "addresses": [],
-    "allowAllAtBlockHeight": {
+    "allow-all-at-block-height": {
       "value": 100,
       "updatable": false
     }

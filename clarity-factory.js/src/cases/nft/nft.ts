@@ -2,11 +2,12 @@ import traverse from "json-schema-traverse";
 
 import $head from "bundle-text:./nft-head.clar.template";
 import $body from "bundle-text:./nft-body.clar.template";
+import $updateSetting from "bundle-text:../../templates/components/update-owner-only-setting.clar.template";
+
 import schema from "./contract-settings.schema.json";
 
 import t from "../../util/t";
 import { getProp } from "../../util/literal";
-
 import type { AllowedErrors } from "../../util/errors";
 import type { ContractSettings } from "../../types/contract-settings";
 import type { NFTTemplateSettings } from "../../types/contract-settings.schema";
@@ -16,7 +17,7 @@ type UpdatableField = { value: string | number; updatable?: boolean };
 
 export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   const errors: AllowedErrors = ["ERR_NOT_TOKEN_OWNER"];
-  if (userSettings.contractOwner?.value) {
+  if (userSettings["contract-owner"]?.value) {
     errors.push("ERR_NOT_CONTRACT_OWNER");
   }
 
@@ -28,6 +29,7 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
 
   const maps: ContractSettings["maps"] = [];
 
+  const updateSettingsFunctions: string[] = [];
   traverse(schema, {
     cb: (schema, pointer) => {
       if (schema.type !== "object") return;
@@ -47,17 +49,16 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
         .replace(/\/properties/g, "")
         .split("/")
         .filter((p) => !!p);
+      const name = path.at(-1)!;
+      const type = schema.properties.value.clarityType;
 
       const setting = getProp<UpdatableField>(userSettings, path);
       if (!setting) return;
 
-      const value = getClarityValue(
-        schema.properties.value.clarityType,
-        setting.value
-      );
+      const value = getClarityValue(type, setting.value);
 
       if (setting.updatable) {
-        if (!userSettings.contractOwner?.value) {
+        if (!userSettings["contract-owner"]?.value) {
           throw new Error(
             "The Contract Owner must be set in order to have updatalbe features"
           );
@@ -66,17 +67,20 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
           throw new Error("Missing clarity type");
         }
         dataVars.push({
-          name: path.at(-1)!,
-          type: schema.properties.value.clarityType,
+          name,
+          type,
           value,
         });
+        updateSettingsFunctions.push(
+          t($updateSetting, { ["var-name"]: name, type })
+        );
       } else {
-        constants.push({ name: path.at(-1)!, value });
+        constants.push({ name, value });
       }
     },
   });
 
-  if (userSettings.allowList) {
+  if (userSettings["allow-list"]) {
     errors.push("ERR_UNAUTHORIZED");
     maps.push({ name: "allow-list", keyType: "principal", valueType: "bool" });
   }
@@ -90,7 +94,8 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
     templateHead: t($head, { name: userSettings.name }),
     templateBody: t($body, {
       name: userSettings.name,
-      allowList: !!userSettings.allowList,
+      ["allow-list"]: !!userSettings["allow-list"],
+      ["update-settings-functions"]: updateSettingsFunctions.join("\n\n"),
     }),
   };
 
