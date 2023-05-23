@@ -7,7 +7,6 @@ import $dataVar from "bundle-text:./templates/components/define-data-var.clar.te
 import $constant from "bundle-text:./templates/components/define-constant.clar.template";
 import $map from "bundle-text:./templates/components/define-map.clar.template";
 
-import testProj from "./test-project.json";
 import buildNftSettings from "./cases/nft/nft";
 import t from "./util/t";
 import { buildErrorDeclaration } from "./util/errors";
@@ -61,7 +60,5 @@ export function buildSmartContract(
     { removeUnknown: false }
   );
 
-  fs.writeFileSync("./temp/result.clar", contract);
+  return contract;
 }
-
-buildSmartContract("nft", testProj);
