@@ -1,0 +1,1 @@
+(define-non-fungible-token {{name}} uint)

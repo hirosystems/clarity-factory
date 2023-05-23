@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "NFT Template Settings",
+  "required": ["name"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": {
+      "type": "string",
+      "description": "Name of the NFT"
+    },
+    "contractOwner": {
+      "type": "object",
+      "title": "Contract Owner",
+      "description": "Stacks address allowed to perform changes to the NFT contracts settings",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "string", "clarityType": "principal" },
+        "updatable": { "type": "boolean" }
+      }
+    },
+    "ustxPrice": {
+      "type": "object",
+      "title": "uSTX Price",
+      "description": "Mint price in USTX. `undefined` to disable mint in STX",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "number", "clarityType": "uint" },
+        "updatable": { "type": "boolean" }
+      }
+    },
+    "nycPrice": {
+      "type": "object",
+      "title": "NYC Price",
+      "description": "Mint price in NYC Citycoins. `undefined` to disable mint in NYC",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "number", "clarityType": "uint" },
+        "updatable": { "type": "boolean" }
+      }
+    },
+    "miaPrice": {
+      "type": "object",
+      "title": "MIA Price",
+      "description": "Mint price in MIA Citycoins. `undefined` to disable mint in MIA",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "number", "clarityType": "uint" },
+        "updatable": { "type": "boolean" }
+      }
+    },
+    "mintLimit": {
+      "type": "object",
+      "title": "Mint limit",
+      "description": "Mint limit per STX address. Leave empty to disable.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number",
+          "clarityType": "uint",
+          "default": 10
+        },
+        "updatable": { "type": "boolean" }
+      }
+    },
+    "allowList": {
+      "type": "object",
+      "description": "Early bird access. Leave empty to disable this feature",
+      "required": ["addresses"],
+      "additionalProperties": false,
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "description": "List of Stacks addresses",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowAllAtBlockHeight": {
+          "type": "object",
+          "title": "Allow all at block height",
+          "description": "Allow everyone to mint from this block height. Leave empty to disable mint for all",
+          "required": ["value"],
+          "additionalProperties": false,
+          "properties": {
+            "value": { "type": "number", "clarityType": "uint" },
+            "updatable": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}
