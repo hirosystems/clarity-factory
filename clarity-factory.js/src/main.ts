@@ -1,5 +1,3 @@
-import fs from "fs";
-
 import $main from "bundle-text:./templates/main.clar.template";
 
 import $traits from "bundle-text:./templates/components/impl-trait.clar.template";
