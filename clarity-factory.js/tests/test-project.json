@@ -5,7 +5,10 @@
     "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9",
     "updatable": true
   },
-  "ustx-price": { "value": 100, "updatable": true },
+  "enable-stx-mint": true,
+  "stx-price": { "value": 100, "updatable": true },
+  "enable-nyc-mint": false,
+  "enable-mia-mint": false,
   "allow-list": {
     "addresses": [],
     "allow-all-at-block-height": {

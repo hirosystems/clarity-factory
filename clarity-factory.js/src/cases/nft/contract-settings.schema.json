@@ -21,10 +21,11 @@
         "updatable": { "type": "boolean" }
       }
     },
-    "ustx-price": {
+    "enable-stx-mint": { "type": "boolean", "default": true },
+    "stx-price": {
       "type": "object",
-      "title": "uSTX price",
-      "description": "Mint price in USTX. `undefined` to disable mint in STX",
+      "title": "STX price",
+      "description": "Mint price in STX.",
       "required": ["value"],
       "additionalProperties": false,
       "properties": {
@@ -32,10 +33,11 @@
         "updatable": { "type": "boolean" }
       }
     },
+    "enable-nyc-mint": { "type": "boolean", "default": false },
     "nyc-price": {
       "type": "object",
       "title": "NYC price",
-      "description": "Mint price in NYC Citycoins. `undefined` to disable mint in NYC",
+      "description": "Mint price in NYC.",
       "required": ["value"],
       "additionalProperties": false,
       "properties": {
@@ -43,10 +45,11 @@
         "updatable": { "type": "boolean" }
       }
     },
+    "enable-mia-mint": { "type": "boolean", "default": false },
     "mia-price": {
       "type": "object",
       "title": "MIA price",
-      "description": "Mint price in MIA Citycoins. `undefined` to disable mint in MIA",
+      "description": "Mint price in MIA.",
       "required": ["value"],
       "additionalProperties": false,
       "properties": {
@@ -95,5 +98,19 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "enable-stx-mint": { "const": true } } },
+      "then": { "required": ["stx-price"] }
+    },
+    {
+      "if": { "properties": { "enable-nyc-mint": { "const": true } } },
+      "then": { "required": ["nyc-price"] }
+    },
+    {
+      "if": { "properties": { "enable-mia-mint": { "const": true } } },
+      "then": { "required": ["mia-price"] }
+    }
+  ]
 }
