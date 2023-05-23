@@ -1,5 +1,5 @@
 {
-  "$schema": "./cases/nft/contract-settings.schema.json",
+  "$schema": "../src/cases/nft/contract-settings.schema.json",
   "name": "awesome-nft",
   "contractOwner": { "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9" },
   "ustxPrice": { "value": 100, "updatable": true },
