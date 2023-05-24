@@ -5,37 +5,34 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type NFTTemplateSettings = NFTTemplateSettings1 & NFTTemplateSettings2;
+export type NFTTemplateSettings1 = {
+  [k: string]: unknown;
+};
 export type OwnerAddress = string;
 export type OwnerCanBeUpdatedAfterDeploy = boolean;
-export type MintNFTWithTokens = ("STX" | "MIA" | "NYC")[];
-export type ValueInUSTX = number;
-export type USTXPriceCanBeUpdatedAfterDeploy = boolean;
-export type NYCPriceCanBeUpdatedAfterDeploy = boolean;
-export type MIAPriceCanBeUpdatedAfterDeploy = boolean;
+export type AcceptSTX = boolean;
+export type AcceptNYC = boolean;
+export type AcceptMIA = boolean;
 export type MintLimitCanBeUpdatedAfterDeploy = boolean;
+/**
+ * Add Stacks addresses to allow early access.
+ */
+export type AllowedAddresses = string[];
+export type BlockHeight = number;
 
-export interface NFTTemplateSettings {
+export interface NFTTemplateSettings2 {
   $schema?: string;
   /**
    * Name of the NFT
    */
   name: string;
-  contractOwner?: ContractOwner;
-  tokens?: MintNFTWithTokens;
-  ustxPrice?: USTXPrice;
-  nycPrice?: NYCPrice;
-  miaPrice?: MIAPrice;
-  mintLimit?: MintLimit;
-  /**
-   * Early bird access. Leave empty to disable this feature
-   */
-  allowList?: {
-    /**
-     * List of Stacks addresses
-     */
-    addresses?: string[];
-    allowAllAtBlockHeight?: AllowAllAtBlockHeight;
-  };
+  "contract-owner"?: ContractOwner;
+  "enable-stx-mint"?: AcceptSTX;
+  "enable-nyc-mint"?: AcceptNYC;
+  "enable-mia-mint"?: AcceptMIA;
+  "mint-limit"?: MintLimit;
+  "allow-list"?: EarlyBirdAccess;
 }
 /**
  * Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings.
@@ -45,27 +42,6 @@ export interface ContractOwner {
   updatable?: OwnerCanBeUpdatedAfterDeploy;
 }
 /**
- * Mint price in USTX. Leave this empty to disable mint in STX.
- */
-export interface USTXPrice {
-  value: ValueInUSTX;
-  updatable?: USTXPriceCanBeUpdatedAfterDeploy;
-}
-/**
- * Mint price in NYC Citycoins. Leave this empty to disable mint in NYC.
- */
-export interface NYCPrice {
-  value?: number;
-  updatable?: NYCPriceCanBeUpdatedAfterDeploy;
-}
-/**
- * Mint price in MIA Citycoins. Leave this empty to disable mint in MIA.
- */
-export interface MIAPrice {
-  value?: number;
-  updatable?: MIAPriceCanBeUpdatedAfterDeploy;
-}
-/**
  * Mint limit per STX address. Leave empty for unlimited.
  */
 export interface MintLimit {
@@ -73,9 +49,16 @@ export interface MintLimit {
   updatable?: MintLimitCanBeUpdatedAfterDeploy;
 }
 /**
- * Allow everyone to mint from this block height. Leave empty to disable mint for all
+ * Allow addresses to claim early access to your NFT.
+ */
+export interface EarlyBirdAccess {
+  addresses?: AllowedAddresses;
+  "allow-all-at-block-height"?: AllowAllAtBlockHeight;
+}
+/**
+ * Allow everyone to mint from this block height. Leave empty to disable mint for all.
  */
 export interface AllowAllAtBlockHeight {
-  value: number;
+  value: BlockHeight;
   updatable?: boolean;
 }
