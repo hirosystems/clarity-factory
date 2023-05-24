@@ -24,10 +24,6 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
     merge(initialData, initialDataOverrides)
   );
 
-  useEffect(() => {
-    setFormData(merge(initialData, initialDataOverrides));
-  }, [initialDataOverrides]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const onFormChange = (formData) => {
     setFormData(formData);
     // TODO: handle and display errors in console, also errors from form?
@@ -41,20 +37,38 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
     setContractBody(contract);
   };
 
+  useEffect(() => {
+    onFormChange(merge(initialData, initialDataOverrides));
+  }, [initialDataOverrides]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <TwoColumnLayout
       left={
-        <Box p="4">
-          <Box w="200px" pb="4">
-            <Link href="/">
-              <img src="/hiroMakerLogoSimple.png" />
-            </Link>
+        <Box p="4" pr="0" w="full">
+          <Box
+            p="8"
+            position="fixed"
+            left="0"
+            top="0"
+            right="50%"
+            bg="gray.700"
+            zIndex="2"
+          >
+            <Box w="full">
+              <Box w="140px">
+                <Link href="/">
+                  <img src="/hiroMakerLogoSimple.png" />
+                </Link>
+              </Box>
+            </Box>
           </Box>
-          <ContractSettingsForm
-            templateCase={templateCase}
-            formData={formData}
-            onChange={onFormChange}
-          />
+          <Box mt="14" w="full">
+            <ContractSettingsForm
+              templateCase={templateCase}
+              formData={formData}
+              onChange={onFormChange}
+            />
+          </Box>
         </Box>
       }
       right={<ContractOutput contractBody={contractBody} />}

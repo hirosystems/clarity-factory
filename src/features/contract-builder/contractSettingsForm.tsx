@@ -12,6 +12,9 @@ import { UiSchema } from "@rjsf/utils";
 import cases, { Cases } from "./cases";
 import styles from "../../styles/Form.module.css";
 import { NFTTemplateSettings } from "../../../clarity-factory/src/types/contract-settings-ui.schema";
+import FormField from "../../common/components/formField";
+import { cloneDeep, get, set } from "lodash";
+import NftForm from "./cases/nft/form";
 
 const Form = withTheme(ChakraUITheme);
 
@@ -32,29 +35,29 @@ const ContractSettingsForm: FC<FormProps> = ({
   onChange,
   formData,
 }) => {
-  const { schema, uiSchema } = cases[templateCase];
+  const { schema } = cases[templateCase];
 
   const handleChange = ({ formData, errors }: IChangeEvent) => {
     console.log({ formData, errors });
     onChange(formData);
   };
 
-  const handleError = (errors: RJSFValidationError[]) => {
-    console.log({ errors });
-  };
+  // const handleError = (errors: RJSFValidationError[]) => {
+  //   console.log({ errors });
+  // };
+
+  // In the future, choose the form here based on the templateCase
+  const form = <NftForm formData={formData} onChange={onChange} />;
 
   return (
     <Box mb="20" w="full" className={styles.formWrapper}>
+      {/* {form} */}
       <Form
         schema={schema}
-        uiSchema={{
-          ...globalUiSchema,
-          ...uiSchema,
-        }}
+        uiSchema={globalUiSchema}
         formData={formData}
         validator={validator}
         onChange={handleChange}
-        onError={handleError}
       />
     </Box>
   );

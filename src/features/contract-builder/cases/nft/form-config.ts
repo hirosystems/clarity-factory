@@ -1,11 +1,5 @@
 import { NFTTemplateSettings } from "../../../../../clarity-factory/src/types/contract-settings-ui.schema";
 
-export const uiSchema = {
-  $schema: {
-    "ui:widget": "hidden",
-  },
-};
-
 export const initialData: NFTTemplateSettings = {
   general: {
     name: "my-awesome-nft",
@@ -15,7 +9,7 @@ export const initialData: NFTTemplateSettings = {
     },
   },
   currency: {
-    "enable-stx-min": true,
+    "enable-stx-mint": true,
     "stx-price": {
       value: 100,
       updatable: false,
