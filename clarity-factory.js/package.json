@@ -21,6 +21,7 @@
     "@parcel/transformer-inline-string": "^2.8.3",
     "@parcel/transformer-typescript-types": "^2.8.3",
     "@types/node": "^20.2.3",
+    "json2ts": "^0.0.7",
     "parcel": "^2.8.3",
     "typescript": "^5.0.4"
   },
