@@ -57,7 +57,9 @@ export default function Home() {
               <Flex direction="column" gap="12" align="center">
                 <Flex direction="column" gap="6" align="center">
                   <Box w="400px">
-                    <img aria-hidden src="/hiroMakerLogo.png" />
+                    <Link href="/" onClick={() => setCreatingNft(false)}>
+                      <img aria-hidden src="/hiroMakerLogo.png" />
+                    </Link>
                   </Box>
                   <Box
                     textTransform="uppercase"
@@ -82,7 +84,7 @@ export default function Home() {
                       <Box color="gray.300" fontFamily="caption" fontSize="lg">
                         Name your NFT Smart Contract
                       </Box>
-                      <Flex direction="column" gap="3" w="full">
+                      <Flex direction="column" gap="4" w="full">
                         <Input
                           placeholder="my-awesome-nft"
                           value={nftName}
