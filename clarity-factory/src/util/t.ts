@@ -43,6 +43,7 @@ export default function t(
     const varName = variable[1];
 
     const varSettings = options?.variables?.find((v) => v.name === varName);
+    console.log({ varName, variables: options?.variables, options });
     if (!varSettings) throw new Error(`Missing var/const data for ${varName}`);
     if (varSettings.isConst) {
       result = result.replace(match, toUpperSnake(varName));

@@ -8,11 +8,11 @@ const Button = {
   },
   variants: {
     primary: {
-      bg: "orange.500",
+      bg: "mint",
       color: "black",
       border: "none",
       _hover: {
-        bg: "orange.600",
+        bg: "mint",
       },
       _active: {
         boxShadow: "outlineGray500",
@@ -118,6 +118,9 @@ const Button = {
   },
   sizes: {
     md: {
+      fontSize: "sm",
+    },
+    lg: {
       fontSize: "sm",
     },
   },

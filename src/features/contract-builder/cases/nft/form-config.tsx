@@ -1,32 +1,22 @@
+import { NFTTemplateSettings } from "../../../../../clarity-factory/src/types/contract-settings-ui.schema";
+
 export const uiSchema = {
   $schema: {
     "ui:widget": "hidden",
   },
-  "ui:order": [
-    "$schema",
-    "name",
-    "contract-owner",
-    "token-uri-base",
-    "tokens",
-    "enable-stx-mint",
-    "stx-price",
-    "enable-nyc-mint",
-    "nyc-price",
-    "enable-mia-mint",
-    "mia-price",
-    "mint-limit",
-    "allow-list",
-  ],
 };
 
-export const initialData = {
-  name: "my-awesome-nft",
-  ustxPrice: { value: 1000, updatable: false },
-  nycPrice: null,
-  miaPrice: null,
-  allowList: {
-    addresses: [],
-    allowAllAtBlockHeight: {
+export const initialData: NFTTemplateSettings = {
+  general: {
+    name: "my-awesome-nft",
+    "token-uri-base": {
+      value: "http://your-hosted-token-uri-base.com",
+      updatable: false,
+    },
+  },
+  currency: {
+    "enable-stx-min": true,
+    "stx-price": {
       value: 100,
       updatable: false,
     },

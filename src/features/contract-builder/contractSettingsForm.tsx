@@ -11,6 +11,7 @@ import { Theme as ChakraUITheme } from "@rjsf/chakra-ui";
 import { UiSchema } from "@rjsf/utils";
 import cases, { Cases } from "./cases";
 import styles from "../../styles/Form.module.css";
+import { NFTTemplateSettings } from "../../../clarity-factory/src/types/contract-settings-ui.schema";
 
 const Form = withTheme(ChakraUITheme);
 
@@ -22,17 +23,19 @@ const globalUiSchema: UiSchema = {
 
 interface FormProps {
   templateCase: Cases;
+  formData: NFTTemplateSettings; // For now, later more options
   onChange: Function;
 }
 
-const ContractSettingsForm: FC<FormProps> = ({ templateCase, onChange }) => {
-  const { schema, initialData, uiSchema } = cases[templateCase];
-
-  const [formData, setFormData] = useState(initialData);
+const ContractSettingsForm: FC<FormProps> = ({
+  templateCase,
+  onChange,
+  formData,
+}) => {
+  const { schema, uiSchema } = cases[templateCase];
 
   const handleChange = ({ formData, errors }: IChangeEvent) => {
     console.log({ formData, errors });
-    setFormData(formData);
     onChange(formData);
   };
 
