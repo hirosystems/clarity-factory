@@ -8,7 +8,7 @@ import $map from "bundle-text:./templates/components/define-map.clar.template";
 import buildNftSettings from "./cases/nft/nft";
 import t from "./util/t";
 import { buildErrorDeclaration } from "./util/errors";
-import { NFTTemplateSettings } from "./types/contract-settings.schema";
+import { NFTTemplateSettings } from "./types/contract-settings-ui.schema";
 
 const templates = ["nft"] as const;
 

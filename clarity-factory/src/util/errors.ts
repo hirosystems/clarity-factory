@@ -13,6 +13,9 @@ export type AllowedErrors = (keyof typeof availableErrors)[];
 
 export function buildErrorDeclaration(errors: AllowedErrors) {
   return errors
+    .sort(
+      (l, r) => parseInt(availableErrors[l]!) - parseInt(availableErrors[r]!)
+    )
     .map((error) =>
       t($defineConstant, {
         name: error,

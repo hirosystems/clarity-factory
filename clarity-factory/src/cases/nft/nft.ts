@@ -11,7 +11,7 @@ import t, { ContractVariable } from "../../util/t";
 import { getProp } from "../../util/literal";
 import type { AllowedErrors } from "../../util/errors";
 import type { ContractSettings } from "../../types/contract-settings";
-import type { NFTTemplateSettings } from "../../types/contract-settings.schema";
+import type { NFTTemplateSettings } from "../../types/contract-settings-ui.schema";
 import { getClarityValue } from "../../util/clarity";
 import { toUpperSnake } from "../../util/string";
 
@@ -20,12 +20,13 @@ type UpdatableField = { value: string | number; updatable?: boolean };
 export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   const errors: AllowedErrors = ["ERR_NOT_TOKEN_OWNER"];
 
-  const contractOwner = userSettings["contract-owner"]?.value;
+  const contractOwner = userSettings.general["contract-owner"]?.value;
   if (contractOwner) {
     errors.push("ERR_NOT_CONTRACT_OWNER");
   }
 
   const dataVars: ContractSettings["dataVars"] = [
+    { name: "artist-address", type: "principal", value: "tx-sender" },
     { name: "last-token-id", type: "uint", value: "u0" },
   ];
 
@@ -37,6 +38,7 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   const contractVariables: ContractVariable[] = [];
 
   traverse(schema, {
+    allKeys: true,
     cb: (schema, pointer) => {
       if (schema.type !== "object") return;
       if (
@@ -46,13 +48,9 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
         return;
       }
 
-      if (!schema.hasOwnProperty("title")) {
-        console.warn("Schema error: Updatable props should have a title");
-        return;
-      }
-
       const path: string[] = pointer
-        .replace(/\/properties/g, "")
+        .replace(/\/(properties|definitions)/g, "")
+        .toLowerCase()
         .split("/")
         .filter((p) => !!p);
       const name = path.at(-1)!;
@@ -101,21 +99,21 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   }
 
   /* MINT LIMIT */
-  const hasMintLimit = !!userSettings["mint-limit"]?.value;
+  const hasMintLimit = !!userSettings.mint?.["mint-limit"]?.value;
   if (hasMintLimit) {
     errors.push("ERR_REACHED_MINT_LIMIT");
     maps.push({ name: "mint-count", keyType: "principal", valueType: "uint" });
   }
 
   /* ALLOW LIST */
-  const hasAllowList = !!userSettings["allow-list"];
+  const hasAllowList = !!userSettings.mint?.["allow-list"];
   if (hasAllowList) {
     errors.push("ERR_UNAUTHORIZED");
     maps.push({ name: "allow-list", keyType: "principal", valueType: "bool" });
   }
   const allowListAddresses: string[] = [];
   if (hasAllowList) {
-    for (const addr of userSettings["allow-list"]?.addresses || []) {
+    for (const addr of userSettings.mint?.["allow-list"]?.addresses || []) {
       allowListAddresses.push(
         t($mapInsert, { map: "allow-list", key: `'${addr}`, value: "true" })
       );
@@ -129,11 +127,11 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
     errors,
     dataVars,
     maps,
-    templateHead: t($head, { name: userSettings.name }),
+    templateHead: t($head, { name: userSettings.general.name }),
     templateBody: t(
       $body,
       {
-        name: userSettings.name,
+        name: userSettings.general.name,
         ["update-settings-functions"]: updateSettingsFunctions.join("\n\n"),
         ["has-mint-limit"]: hasMintLimit,
         ["has-allow-list"]: hasAllowList,

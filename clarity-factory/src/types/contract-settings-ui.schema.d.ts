@@ -5,23 +5,16 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type NFTTemplateSettings = NFTTemplateSettings1 & NFTTemplateSettings2;
-export type NFTTemplateSettings1 = {
-  [k: string]: unknown;
-};
 export type OwnerAddress = string;
 export type OwnerCanBeUpdatedAfterDeploy = boolean;
 export type TokenURIBase1 = string;
 export type TokenURIBaseCanBeUpdatedAfterDeploy = boolean;
-export type AcceptSTX = boolean;
-export type AcceptNYC = boolean;
-export type AcceptMIA = boolean;
-export type ValueInSTX = number;
-export type STXPriceCanBeUpdatedAfterDeploy = boolean;
-export type ValueInNYC = number;
-export type NYCPriceCanBeUpdatedAfterDeploy = boolean;
-export type ValueInMIA = number;
-export type MIAPriceCanBeUpdatedAfterDeploy = boolean;
+/**
+ * Define if NFTs can be minted with STX and or Citycoins (NYC, MIA)
+ */
+export type MintCurrenciesSettings = {
+  [k: string]: unknown;
+};
 export type MintLimitCanBeUpdatedAfterDeploy = boolean;
 /**
  * Add Stacks addresses to allow early access.
@@ -29,22 +22,19 @@ export type MintLimitCanBeUpdatedAfterDeploy = boolean;
 export type AllowedAddresses = string[];
 export type BlockHeight = number;
 
-export interface NFTTemplateSettings2 {
+export interface NFTTemplateSettings {
   $schema?: string;
+  general: GeneralSettings;
+  currency?: MintCurrenciesSettings;
+  mint?: MintSettings;
+}
+export interface GeneralSettings {
   /**
    * Name of the NFT
    */
   name: string;
   "contract-owner"?: ContractOwner;
   "token-uri-base": TokenURIBase;
-  "enable-stx-mint"?: AcceptSTX;
-  "enable-nyc-mint"?: AcceptNYC;
-  "enable-mia-mint"?: AcceptMIA;
-  "stx-price"?: STXPrice;
-  "nyc-price"?: NYCPrice;
-  "mia-price"?: MIAPrice;
-  "mint-limit"?: MintLimit;
-  "allow-list"?: EarlyBirdAccess;
 }
 /**
  * Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings.
@@ -61,25 +51,12 @@ export interface TokenURIBase {
   updatable?: TokenURIBaseCanBeUpdatedAfterDeploy;
 }
 /**
- * Price in STX.
+ * Mint settings such as limit and early birds
  */
-export interface STXPrice {
-  value: ValueInSTX;
-  updatable?: STXPriceCanBeUpdatedAfterDeploy;
-}
-/**
- * Price in NYC.
- */
-export interface NYCPrice {
-  value: ValueInNYC;
-  updatable?: NYCPriceCanBeUpdatedAfterDeploy;
-}
-/**
- * Price in MIA.
- */
-export interface MIAPrice {
-  value: ValueInMIA;
-  updatable?: MIAPriceCanBeUpdatedAfterDeploy;
+export interface MintSettings {
+  "mint-limit"?: MintLimit;
+  "allow-list"?: EarlyBirdAccess;
+  [k: string]: unknown;
 }
 /**
  * Mint limit per STX address. Leave empty for unlimited.

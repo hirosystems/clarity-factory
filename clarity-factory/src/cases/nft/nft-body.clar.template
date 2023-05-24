@@ -1,11 +1,18 @@
 {{update-settings-functions}}
 
+(define-public (update-artist-address (new-value principal))
+  (begin
+    (asserts! (is-eq tx-sender (var-get artist-address)) ERR_UNAUTHORIZED)
+    (ok (var-set artist-address new-value))
+  )
+)
+
 (define-read-only (get-last-token-id)
   (ok (var-get last-token-id))
 )
 
 (define-read-only (get-token-uri (token-id uint))
-  (ok (some (concat {{read(token-uri-base)}} token-id)))
+  (ok (some (concat (concat {{read(token-uri-base)}} (int-to-ascii token-id)) ".json")))
 )
 
 (define-read-only (get-owner (token-id uint))
@@ -19,7 +26,51 @@
   )
 )
 
-(define-private (mint-helper (recipient principal))
+{{if enable-stx-mint}}
+(define-private (mint)
+  (begin
+    (try! (stx-transfer? (* STX_PRICE u1000000) tx-sender (var-get artist-address)))
+    (try! (mint-helper))
+    (ok true)
+  )
+)
+{{endif}}
+
+{{if enable-nyc-mint}}
+(define-private (mint-in-nyc)
+  (begin
+    (try! (contract-call?
+      'SP2H8PY27SEZ03MWRKS5XABZYQN17ETGQS3527SA5.newyorkcitycoin-token
+      transfer
+      NYC_PRICE
+      tx-sender
+      (var-get artist-address)
+      (some 0x00)
+    ))
+    (try! (mint-helper))
+    (ok true)
+  )
+)
+{{endif}}
+
+{{if enable-mia-mint}}
+(define-private (mint-in-mia)
+  (begin
+    (try! (contract-call?
+      'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token
+      transfer
+      MIA_PRICE
+      tx-sender
+      (var-get artist-address)
+      (some 0x00)
+    ))
+    (try! (mint-helper))
+    (ok true)
+  )
+)
+{{endif}}
+
+(define-private (mint-helper)
   (let (
     (token-id (+ (var-get last-token-id) u1))
     {{if has-mint-limit}}
@@ -32,7 +83,7 @@
     {{if has-allow-list}}
     (asserts! (is-some (map-get? allow-list tx-sender)) ERR_UNAUTHORIZED)
     {{endif}}
-    (try! (nft-mint? {{name}} token-id recipient))
+    (try! (nft-mint? {{name}} token-id tx-sender))
     (var-set last-token-id token-id)
 
     (ok token-id)
