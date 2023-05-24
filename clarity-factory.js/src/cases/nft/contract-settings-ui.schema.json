@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "NFT Template Settings",
+  "required": ["name"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": {
+      "type": "string",
+      "description": "Name of the NFT"
+    },
+    "contract-owner": {
+      "type": "object",
+      "title": "Contract Owner",
+      "description": "Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "Owner Address",
+          "clarityType": "principal"
+        },
+        "updatable": {
+          "type": "boolean",
+          "title": "Owner can be updated after deploy"
+        }
+      }
+    },
+    "enable-stx-mint": {
+      "type": "boolean",
+      "title": "Accept STX",
+      "default": true
+    },
+    "enable-nyc-mint": {
+      "type": "boolean",
+      "title": "Accept NYC",
+      "default": false
+    },
+    "enable-mia-mint": {
+      "type": "boolean",
+      "title": "Accept MIA",
+      "default": false
+    },
+    "mint-limit": {
+      "type": "object",
+      "title": "Mint limit",
+      "description": "Mint limit per STX address. Leave empty for unlimited.",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number",
+          "clarityType": "uint",
+          "default": 10
+        },
+        "updatable": {
+          "type": "boolean",
+          "title": "Mint limit can be updated after deploy"
+        }
+      }
+    },
+    "allow-list": {
+      "type": "object",
+      "title": "Early bird access",
+      "description": "Allow addresses to claim early access to your NFT.",
+      "additionalProperties": false,
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "title": "Allowed addresses",
+          "description": "Add Stacks addresses to allow early access.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allow-all-at-block-height": {
+          "type": "object",
+          "title": "Allow all at block height",
+          "description": "Allow everyone to mint from this block height. Leave empty to disable mint for all.",
+          "required": ["value"],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "title": "Block height",
+              "clarityType": "uint"
+            },
+            "updatable": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "enable-stx-mint": {
+      "oneOf": [
+        {
+          "properties": {
+            "enable-stx-mint": {
+              "const": true
+            },
+            "stx-price": {
+              "type": "object",
+              "title": "STX Price",
+              "description": "Price in STX.",
+              "required": ["value"],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "title": "Value in STX",
+                  "clarityType": "uint"
+                },
+                "updatable": {
+                  "type": "boolean",
+                  "title": "STX price can be updated after deploy"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "required": ["stx-price"]
+    },
+    "enable-nyc-mint": {
+      "oneOf": [
+        {
+          "properties": {
+            "enable-nyc-mint": {
+              "const": true
+            },
+            "nyc-price": {
+              "type": "object",
+              "title": "NYC Price",
+              "description": "Price in NYC Citycoins.",
+              "additionalProperties": false,
+              "properties": {
+                "value": { "type": "number", "clarityType": "uint" },
+                "updatable": {
+                  "type": "boolean",
+                  "title": "NYC price can be updated after deploy"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "required": ["nyc-price"]
+    },
+    "enable-mia-mint": {
+      "oneOf": [
+        {
+          "properties": {
+            "enable-mia-mint": {
+              "const": true
+            },
+            "mia-price": {
+              "type": "object",
+              "title": "MIA Price",
+              "description": "Price in MIA Citycoins.",
+              "additionalProperties": false,
+              "properties": {
+                "value": { "type": "number", "clarityType": "uint" },
+                "updatable": {
+                  "type": "boolean",
+                  "title": "MIA price can be updated after deploy"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "required": ["mia-price"]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "enable-stx-mint": { "const": true } } },
+      "then": { "required": ["stx-price"] }
+    },
+    {
+      "if": { "properties": { "enable-nyc-mint": { "const": true } } },
+      "then": { "required": ["nyc-price"] }
+    },
+    {
+      "if": { "properties": { "enable-mia-mint": { "const": true } } },
+      "then": { "required": ["mia-price"] }
+    }
+  ]
+}
