@@ -1,16 +1,32 @@
 {
-  "$schema": "../src/cases/nft/contract-settings.schema.json",
+  "$schema": "../src/cases/nft/contract-settings-ui.schema.json",
   "name": "awesome-nft",
-  "contract-owner": {
-    "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9",
+  "token-uri-base": {
+    "value": "ipfs://xxuiAffPZmcqyV",
     "updatable": true
   },
-  "ustx-price": { "value": 100, "updatable": true },
+  "contract-owner": {
+    "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9",
+    "updatable": false
+  },
+  "mint-limit": {
+    "value": 10,
+    "updatable": false
+  },
+  "enable-stx-mint": true,
+  "stx-price": { "value": 100, "updatable": true },
+  "enable-mia-mint": true,
+  "mia-price": { "value": 42, "updatable": false },
+  "enable-nyc-mint": false,
   "allow-list": {
-    "addresses": [],
+    "addresses": [
+      "ST2NEB84ASENDXKYGJPQW86YXQCEFEX2ZQPG87ND",
+      "ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5",
+      "ST3PF13W7Z0RRM42A8VZRVFQ75SV1K26RXEP8YGKJ"
+    ],
     "allow-all-at-block-height": {
       "value": 100,
-      "updatable": false
+      "updatable": true
     }
   }
 }

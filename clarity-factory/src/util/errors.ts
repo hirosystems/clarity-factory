@@ -6,6 +6,7 @@ const availableErrors = {
   ERR_UNAUTHORIZED: "1000",
   ERR_NOT_CONTRACT_OWNER: "1001",
   ERR_NOT_TOKEN_OWNER: "1002",
+  ERR_REACHED_MINT_LIMIT: "1003",
 } as const;
 
 export type AllowedErrors = (keyof typeof availableErrors)[];

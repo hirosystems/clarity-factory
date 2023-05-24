@@ -12,6 +12,4 @@ try {
   fs.mkdirSync("./tests/temp", { recursive: true });
 }
 
-console.log("*".repeat(20));
-console.log(result);
 fs.writeFileSync("./tests/temp/result.clar", result);

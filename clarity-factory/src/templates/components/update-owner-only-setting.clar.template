@@ -1,6 +1,6 @@
 (define-public (update-{{var-name}} (new-value {{type}}))
   (begin
-    (asserts! (is-eq tx-sender contract-owner) ERR_NOT_CONTRACT_OWNER)
+    (asserts! (is-eq tx-sender {{read(contract-owner)}}) ERR_NOT_CONTRACT_OWNER)
     (ok (var-set {{var-name}} new-value))
   )
 )

@@ -6,3 +6,7 @@ export function toCamelCase(str: string) {
     )
     .join("");
 }
+
+export function toUpperSnake(str: string) {
+  return str.toUpperCase().replaceAll("-", "_");
+}

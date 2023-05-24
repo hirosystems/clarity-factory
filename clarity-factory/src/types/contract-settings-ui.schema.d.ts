@@ -11,9 +11,17 @@ export type NFTTemplateSettings1 = {
 };
 export type OwnerAddress = string;
 export type OwnerCanBeUpdatedAfterDeploy = boolean;
+export type TokenURIBase1 = string;
+export type TokenURIBaseCanBeUpdatedAfterDeploy = boolean;
 export type AcceptSTX = boolean;
 export type AcceptNYC = boolean;
 export type AcceptMIA = boolean;
+export type ValueInSTX = number;
+export type STXPriceCanBeUpdatedAfterDeploy = boolean;
+export type ValueInNYC = number;
+export type NYCPriceCanBeUpdatedAfterDeploy = boolean;
+export type ValueInMIA = number;
+export type MIAPriceCanBeUpdatedAfterDeploy = boolean;
 export type MintLimitCanBeUpdatedAfterDeploy = boolean;
 /**
  * Add Stacks addresses to allow early access.
@@ -28,9 +36,13 @@ export interface NFTTemplateSettings2 {
    */
   name: string;
   "contract-owner"?: ContractOwner;
+  "token-uri-base": TokenURIBase;
   "enable-stx-mint"?: AcceptSTX;
   "enable-nyc-mint"?: AcceptNYC;
   "enable-mia-mint"?: AcceptMIA;
+  "stx-price"?: STXPrice;
+  "nyc-price"?: NYCPrice;
+  "mia-price"?: MIAPrice;
   "mint-limit"?: MintLimit;
   "allow-list"?: EarlyBirdAccess;
 }
@@ -40,6 +52,34 @@ export interface NFTTemplateSettings2 {
 export interface ContractOwner {
   value: OwnerAddress;
   updatable?: OwnerCanBeUpdatedAfterDeploy;
+}
+/**
+ * Base URI for the NFT image.
+ */
+export interface TokenURIBase {
+  value: TokenURIBase1;
+  updatable?: TokenURIBaseCanBeUpdatedAfterDeploy;
+}
+/**
+ * Price in STX.
+ */
+export interface STXPrice {
+  value: ValueInSTX;
+  updatable?: STXPriceCanBeUpdatedAfterDeploy;
+}
+/**
+ * Price in NYC.
+ */
+export interface NYCPrice {
+  value: ValueInNYC;
+  updatable?: NYCPriceCanBeUpdatedAfterDeploy;
+}
+/**
+ * Price in MIA.
+ */
+export interface MIAPrice {
+  value: ValueInMIA;
+  updatable?: MIAPriceCanBeUpdatedAfterDeploy;
 }
 /**
  * Mint limit per STX address. Leave empty for unlimited.

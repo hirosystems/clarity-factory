@@ -6,6 +6,7 @@ export const uiSchema = {
     "$schema",
     "name",
     "contract-owner",
+    "token-uri-base",
     "tokens",
     "enable-stx-mint",
     "stx-price",

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "NFT Template Settings",
-  "required": ["name"],
+  "required": ["name", "token-uri-base"],
   "additionalProperties": false,
   "properties": {
     "$schema": { "type": "string" },
@@ -28,6 +28,25 @@
         }
       }
     },
+    "token-uri-base": {
+      "type": "object",
+      "title": "Token URI base",
+      "description": "Base URI for the NFT image.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "Token URI base",
+          "clarityType": "(string-ascii 80)",
+          "default": "ipfs://"
+        },
+        "updatable": {
+          "type": "boolean",
+          "title": "Token URI base can be updated after deploy"
+        }
+      }
+    },
     "enable-stx-mint": {
       "type": "boolean",
       "title": "Accept STX",
@@ -42,6 +61,60 @@
       "type": "boolean",
       "title": "Accept MIA",
       "default": false
+    },
+    "stx-price": {
+      "type": "object",
+      "title": "STX Price",
+      "description": "Price in STX.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number",
+          "title": "Value in STX",
+          "clarityType": "uint"
+        },
+        "updatable": {
+          "type": "boolean",
+          "title": "STX price can be updated after deploy"
+        }
+      }
+    },
+    "nyc-price": {
+      "type": "object",
+      "title": "NYC Price",
+      "description": "Price in NYC.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number",
+          "title": "Value in NYC",
+          "clarityType": "uint"
+        },
+        "updatable": {
+          "type": "boolean",
+          "title": "NYC price can be updated after deploy"
+        }
+      }
+    },
+    "mia-price": {
+      "type": "object",
+      "title": "MIA Price",
+      "description": "Price in MIA.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number",
+          "title": "Value in MIA",
+          "clarityType": "uint"
+        },
+        "updatable": {
+          "type": "boolean",
+          "title": "MIA price can be updated after deploy"
+        }
+      }
     },
     "mint-limit": {
       "type": "object",
@@ -90,88 +163,6 @@
           }
         }
       }
-    }
-  },
-  "dependencies": {
-    "enable-stx-mint": {
-      "oneOf": [
-        {
-          "properties": {
-            "enable-stx-mint": {
-              "const": true
-            },
-            "stx-price": {
-              "type": "object",
-              "title": "STX Price",
-              "description": "Price in STX.",
-              "required": ["value"],
-              "additionalProperties": false,
-              "properties": {
-                "value": {
-                  "type": "number",
-                  "title": "Value in STX",
-                  "clarityType": "uint"
-                },
-                "updatable": {
-                  "type": "boolean",
-                  "title": "STX price can be updated after deploy"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "required": ["stx-price"]
-    },
-    "enable-nyc-mint": {
-      "oneOf": [
-        {
-          "properties": {
-            "enable-nyc-mint": {
-              "const": true
-            },
-            "nyc-price": {
-              "type": "object",
-              "title": "NYC Price",
-              "description": "Price in NYC Citycoins.",
-              "additionalProperties": false,
-              "properties": {
-                "value": { "type": "number", "clarityType": "uint" },
-                "updatable": {
-                  "type": "boolean",
-                  "title": "NYC price can be updated after deploy"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "required": ["nyc-price"]
-    },
-    "enable-mia-mint": {
-      "oneOf": [
-        {
-          "properties": {
-            "enable-mia-mint": {
-              "const": true
-            },
-            "mia-price": {
-              "type": "object",
-              "title": "MIA Price",
-              "description": "Price in MIA Citycoins.",
-              "additionalProperties": false,
-              "properties": {
-                "value": { "type": "number", "clarityType": "uint" },
-                "updatable": {
-                  "type": "boolean",
-                  "title": "MIA price can be updated after deploy"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "required": ["mia-price"]
     }
   },
   "allOf": [

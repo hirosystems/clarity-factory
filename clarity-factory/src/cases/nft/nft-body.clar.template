@@ -5,7 +5,7 @@
 )
 
 (define-read-only (get-token-uri (token-id uint))
-  (ok none)
+  (ok (some (concat {{read(token-uri-base)}} token-id)))
 )
 
 (define-read-only (get-owner (token-id uint))
@@ -19,20 +19,30 @@
   )
 )
 
-(define-public (mint (recipient principal))
-  (let
-    (
-      (token-id (+ (var-get last-token-id) u1))
-    )
-    {{if allow-list}}
+(define-private (mint-helper (recipient principal))
+  (let (
+    (token-id (+ (var-get last-token-id) u1))
+    {{if has-mint-limit}}
+    (nb-mint (default-to u0 (map-get? mint-count tx-sender)))
+    {{endif}}
+  )
+    {{if has-mint-limit}}
+    (asserts! (< nb-mint {{read(mint-limit)}}) ERR_REACHED_MINT_LIMIT)
+    {{endif}}
+    {{if has-allow-list}}
     (asserts! (is-some (map-get? allow-list tx-sender)) ERR_UNAUTHORIZED)
     {{endif}}
-
     (try! (nft-mint? {{name}} token-id recipient))
     (var-set last-token-id token-id)
+
     (ok token-id)
   )
 )
 
 
-{{allow-list-addresses}}
+{{if has-allow-list}}
+(begin
+  ;; populate early birds list
+  {{allow-list-addresses}}
+)
+{{endif}}
