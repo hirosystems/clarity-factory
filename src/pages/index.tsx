@@ -5,7 +5,7 @@ import { Box, Flex, Heading } from "@chakra-ui/layout";
 import ContractSettingsForm from "../features/contract-builder/contractSettingsForm";
 import { Cases } from "../features/contract-builder/cases";
 import ContractOutput from "../features/contract-builder/contractOutput";
-import { buildSmartContract } from "../../clarity-factory.js/dist/main";
+import { buildSmartContract } from "../../clarity-factory/dist/main";
 import { useState } from "react";
 
 export default function Home() {

@@ -1,16 +1,16 @@
 {
-  "name": "examples",
-  "version": "1.0.0",
+  "name": "clarity-factory",
+  "version": "0.0.1",
   "description": "",
   "source": "src/main.ts",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "type": "module",
   "scripts": {
-    "build-types": "npx json2ts -i 'src/**/*.schema.json' -o src/types ",
-    "build": "npm run build-types; npx parcel build",
-    "watch": "npx parcel watch",
-    "launch": "npm run build && node dist/main.js",
+    "build-types": "json2ts -i 'src/**/*.schema.json' -o src/types ",
+    "build": "npm run build-types; parcel build",
+    "watch": "parcel watch",
+    "launch": "npm run build; node dist/main.js",
     "test": "npm run build; node ./tests/test.js"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
     "@parcel/transformer-inline-string": "^2.8.3",
     "@parcel/transformer-typescript-types": "^2.8.3",
     "@types/node": "^20.2.3",
+    "json2ts": "^0.0.7",
     "parcel": "^2.8.3",
     "typescript": "^5.0.4"
   },

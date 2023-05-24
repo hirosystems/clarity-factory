@@ -1,11 +1,14 @@
 {
-  "name": "clarity-factory",
+  "name": "clarity-factory-app",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "clarity-factory"
+  ],
   "scripts": {
-    "predev": "cd clarity-factory.js && npm ci && npm run build && cd ..",
+    "predev": "npm run build --workspace clarity-factory",
     "dev": "next dev",
-    "prebuild": "cd clarity-factory.js && npm ci && npm run build && cd ..",
+    "prebuild": "npm run build --workspace clarity-factory",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
