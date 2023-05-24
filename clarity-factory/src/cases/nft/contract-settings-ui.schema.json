@@ -65,8 +65,9 @@
 
     "Currency": {
       "type": "object",
-      "title": "Mint currencies settings",
+      "title": "Currencies settings",
       "description": "Define if NFTs can be minted with STX and or Citycoins (NYC, MIA)",
+      "additionalProperties": false,
       "properties": {
         "enable-stx-mint": {
           "type": "boolean",
@@ -137,27 +138,14 @@
             }
           }
         }
-      },
-      "allOf": [
-        {
-          "if": { "properties": { "enable-stx-mint": { "const": true } } },
-          "then": { "required": ["stx-price"] }
-        },
-        {
-          "if": { "properties": { "enable-nyc-mint": { "const": true } } },
-          "then": { "required": ["nyc-price"] }
-        },
-        {
-          "if": { "properties": { "enable-mia-mint": { "const": true } } },
-          "then": { "required": ["mia-price"] }
-        }
-      ]
+      }
     },
 
     "Mint": {
       "type": "object",
       "title": "Mint settings",
       "description": "Mint settings such as limit and early birds",
+      "additionalProperties": false,
       "properties": {
         "mint-limit": {
           "type": "object",

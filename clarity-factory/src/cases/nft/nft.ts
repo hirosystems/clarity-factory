@@ -18,6 +18,19 @@ import { toUpperSnake } from "../../util/string";
 type UpdatableField = { value: string | number; updatable?: boolean };
 
 export default function buildNftSettings(userSettings: NFTTemplateSettings) {
+  /* SANITY CHECKS */
+  const { currency } = userSettings;
+  if (!currency?.["enable-stx-mint"] && currency?.["stx-price"]) {
+    delete currency?.["stx-price"];
+  }
+  if (!currency?.["enable-nyc-mint"] && currency?.["nyc-price"]) {
+    delete currency?.["nyc-price"];
+  }
+  if (!currency?.["enable-mia-mint"] && currency?.["mia-price"]) {
+    delete currency?.["mia-price"];
+  }
+
+  /* INIT */
   const errors: AllowedErrors = ["ERR_NOT_TOKEN_OWNER"];
 
   const contractOwner = userSettings.general["contract-owner"]?.value;
@@ -111,6 +124,8 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
     errors.push("ERR_UNAUTHORIZED");
     maps.push({ name: "allow-list", keyType: "principal", valueType: "bool" });
   }
+  const hasAllowAll =
+    !!userSettings.mint?.["allow-list"]?.["allow-all-at-block-height"]?.value;
   const allowListAddresses: string[] = [];
   if (hasAllowList) {
     for (const addr of userSettings.mint?.["allow-list"]?.addresses || []) {
@@ -135,6 +150,8 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
         ["update-settings-functions"]: updateSettingsFunctions.join("\n\n"),
         ["has-mint-limit"]: hasMintLimit,
         ["has-allow-list"]: hasAllowList,
+        ["has-allow-list-and-all"]: hasAllowList && hasAllowAll,
+        ["has-allow-list-only"]: hasAllowList && !hasAllowAll,
         ["allow-list-addresses"]: allowListAddresses.join("\n  "),
       },
       { variables: contractVariables }

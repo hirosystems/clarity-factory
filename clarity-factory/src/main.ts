@@ -55,7 +55,7 @@ export function buildSmartContract(
       templateHead: settings.templateHead,
       templateBody: settings.templateBody,
     },
-    { removeUnknown: true }
+    { removeUnknown: false }
   );
 
   return contract;

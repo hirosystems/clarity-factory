@@ -9,12 +9,15 @@ export type OwnerAddress = string;
 export type OwnerCanBeUpdatedAfterDeploy = boolean;
 export type TokenURIBase1 = string;
 export type TokenURIBaseCanBeUpdatedAfterDeploy = boolean;
-/**
- * Define if NFTs can be minted with STX and or Citycoins (NYC, MIA)
- */
-export type MintCurrenciesSettings = {
-  [k: string]: unknown;
-};
+export type AcceptSTX = boolean;
+export type AcceptNYC = boolean;
+export type AcceptMIA = boolean;
+export type ValueInSTX = number;
+export type STXPriceCanBeUpdatedAfterDeploy = boolean;
+export type ValueInNYC = number;
+export type NYCPriceCanBeUpdatedAfterDeploy = boolean;
+export type ValueInMIA = number;
+export type MIAPriceCanBeUpdatedAfterDeploy = boolean;
 export type MintLimitCanBeUpdatedAfterDeploy = boolean;
 /**
  * Add Stacks addresses to allow early access.
@@ -25,7 +28,7 @@ export type BlockHeight = number;
 export interface NFTTemplateSettings {
   $schema?: string;
   general: GeneralSettings;
-  currency?: MintCurrenciesSettings;
+  currency?: CurrenciesSettings;
   mint?: MintSettings;
 }
 export interface GeneralSettings {
@@ -51,12 +54,43 @@ export interface TokenURIBase {
   updatable?: TokenURIBaseCanBeUpdatedAfterDeploy;
 }
 /**
+ * Define if NFTs can be minted with STX and or Citycoins (NYC, MIA)
+ */
+export interface CurrenciesSettings {
+  "enable-stx-mint"?: AcceptSTX;
+  "enable-nyc-mint"?: AcceptNYC;
+  "enable-mia-mint"?: AcceptMIA;
+  "stx-price"?: STXPrice;
+  "nyc-price"?: NYCPrice;
+  "mia-price"?: MIAPrice;
+}
+/**
+ * Price in STX.
+ */
+export interface STXPrice {
+  value: ValueInSTX;
+  updatable?: STXPriceCanBeUpdatedAfterDeploy;
+}
+/**
+ * Price in NYC.
+ */
+export interface NYCPrice {
+  value: ValueInNYC;
+  updatable?: NYCPriceCanBeUpdatedAfterDeploy;
+}
+/**
+ * Price in MIA.
+ */
+export interface MIAPrice {
+  value: ValueInMIA;
+  updatable?: MIAPriceCanBeUpdatedAfterDeploy;
+}
+/**
  * Mint settings such as limit and early birds
  */
 export interface MintSettings {
   "mint-limit"?: MintLimit;
   "allow-list"?: EarlyBirdAccess;
-  [k: string]: unknown;
 }
 /**
  * Mint limit per STX address. Leave empty for unlimited.

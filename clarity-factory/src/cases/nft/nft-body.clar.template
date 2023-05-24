@@ -70,6 +70,21 @@
 )
 {{endif}}
 
+{{if has-allow-list-and-all}}
+(define-private (is-addr-allowed-to-mint (addr principal))
+  (if (>= {{read(allow-all-at-block-height)}} block-height)
+    true
+    (is-some (map-get? allow-list addr))
+  )
+)
+{{endif}}
+
+{{if has-allow-list-only}}
+(define-private (is-addr-allowed-to-mint (addr principal))
+  (is-some (map-get? allow-list addr))
+)
+{{endif}}
+
 (define-private (mint-helper)
   (let (
     (token-id (+ (var-get last-token-id) u1))
@@ -81,7 +96,7 @@
     (asserts! (< nb-mint {{read(mint-limit)}}) ERR_REACHED_MINT_LIMIT)
     {{endif}}
     {{if has-allow-list}}
-    (asserts! (is-some (map-get? allow-list tx-sender)) ERR_UNAUTHORIZED)
+    (asserts! (is-addr-allowed-to-mint tx-sender) ERR_UNAUTHORIZED)
     {{endif}}
     (try! (nft-mint? {{name}} token-id tx-sender))
     (var-set last-token-id token-id)
