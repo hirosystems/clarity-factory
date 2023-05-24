@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "cd clarity-factory.js && npm run build && cd ..",
+    "predev": "cd clarity-factory.js && npm ci && npm run build && cd ..",
     "dev": "next dev",
-    "prebuild": "cd clarity-factory.js && npm run build && cd ..",
+    "prebuild": "cd clarity-factory.js && npm ci && npm run build && cd ..",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
