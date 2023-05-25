@@ -5,13 +5,13 @@ import $body from "bundle-text:./nft-body.clar.template";
 import $updateSetting from "bundle-text:../../templates/components/update-owner-only-setting.clar.template";
 import $mapInsert from "bundle-text:../../templates/components/map-insert.clar.template";
 
-import schema from "./contract-settings-ui.schema.json";
+import schema from "./contract-settings.schema.json";
 
 import t, { ContractVariable } from "../../util/t";
 import { getProp } from "../../util/literal";
 import type { AllowedErrors } from "../../util/errors";
 import type { ContractSettings } from "../../types/contract-settings";
-import type { NFTTemplateSettings } from "../../types/contract-settings-ui.schema";
+import type { NFTTemplateSettings } from "../../types/contract-settings.schema";
 import { getClarityValue } from "../../util/clarity";
 import { toUpperSnake } from "../../util/string";
 
