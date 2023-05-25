@@ -26,7 +26,12 @@ export function buildSmartContract(
   template: Templates,
   userSettings: TemplateSettings
 ) {
-  const { settings, warnings } = getContractSettings(template, userSettings);
+  const clonedSettings = structuredClone(userSettings);
+  const {
+    settings,
+    warnings,
+    userSettings: updatedUserSettings,
+  } = getContractSettings(template, clonedSettings);
 
   const errConstants = buildErrorDeclaration(settings.errors);
 
@@ -58,5 +63,9 @@ export function buildSmartContract(
     { removeUnknown: false }
   );
 
-  return { contract, diagnostics: { warnings } };
+  return {
+    contract,
+    diagnostics: { warnings },
+    userSettings: updatedUserSettings,
+  };
 }

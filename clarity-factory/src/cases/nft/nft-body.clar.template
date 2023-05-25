@@ -23,7 +23,7 @@
 )
 
 (define-read-only (get-token-uri (token-id uint))
-  (ok (some (concat (concat {{read(token-uri-base)}} (int-to-ascii token-id)) ".json")))
+  (ok (some (concat (concat {{read(token-uri-base)}} "{id}") ".json")))
 )
 
 (define-read-only (get-owner (token-id uint))

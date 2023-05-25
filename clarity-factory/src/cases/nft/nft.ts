@@ -32,12 +32,21 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   }
 
   /* INIT */
-
   const errors: AllowedErrors = ["ERR_NOT_TOKEN_OWNER"];
 
   const enableContractOwner = !!general["enable-contract-owner"];
   if (enableContractOwner) {
     errors.push("ERR_NOT_CONTRACT_OWNER");
+    if (!general["contract-owner"]?.value) {
+      general["contract-owner"] = { value: "tx-sender" };
+    }
+  } else {
+    if (
+      general.hasOwnProperty("contract-owner") &&
+      typeof general["contract-owner"] === "object"
+    ) {
+      general["contract-owner"] = undefined;
+    }
   }
 
   const dataVars: ContractSettings["dataVars"] = [
@@ -184,7 +193,11 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
     ),
   };
 
-  return { settings: baseSettings, warnings };
+  return {
+    settings: baseSettings,
+    warnings,
+    userSettings: { general, currency, mint },
+  };
 }
 
 export function validateSettings(
