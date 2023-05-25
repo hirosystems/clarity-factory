@@ -25,7 +25,7 @@ export type EnableBurn = boolean;
 export interface FTTemplateSettings {
   $schema?: string;
   general: GeneralSettings;
-  mint?: MintSettings;
+  mint?: TokenManagement;
 }
 export interface GeneralSettings {
   /**
@@ -40,9 +40,9 @@ export interface GeneralSettings {
   "token-uri-base": TokenURIBase1;
 }
 /**
- * Mint settings such mint price and max mintable amount per address
+ * Mint and burn settings
  */
-export interface MintSettings {
+export interface TokenManagement {
   "mint-limit"?: MintLimit;
   "enable-burn"?: EnableBurn;
 }

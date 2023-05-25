@@ -43,8 +43,8 @@
 
     "Mint": {
       "type": "object",
-      "title": "Mint settings",
-      "description": "Mint settings such mint price and max mintable amount per address",
+      "title": "Token management",
+      "description": "Mint and burn settings",
       "additionalProperties": false,
       "properties": {
         "mint-limit": {

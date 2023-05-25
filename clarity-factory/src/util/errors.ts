@@ -8,6 +8,7 @@ const availableErrors = {
   ERR_METADATA_FROZEN: "1002",
   ERR_NOT_TOKEN_OWNER: "1003",
   ERR_REACHED_MINT_LIMIT: "1004",
+  ERR_FORBIDDEN: "1006",
 } as const;
 
 export type AllowedErrors = (keyof typeof availableErrors)[];

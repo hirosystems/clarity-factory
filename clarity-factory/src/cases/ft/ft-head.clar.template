@@ -1,0 +1,6 @@
+{{if has-max-supply}}
+(define-fungible-token {{tick}} u{{max-supply}})
+{{endif}}
+{{if !has-max-supply}}
+(define-fungible-token {{tick}})
+{{endif}}
