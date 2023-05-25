@@ -6,18 +6,18 @@
       "value": "ipfs://xxuiAffPZmcqyV/",
       "updatable": true
     },
+    "enable-contract-owner": true,
     "contract-owner": {
-      "value": "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9",
+      "value": "tx-sender",
       "updatable": true
-    }
+    },
+    "enable-freeze-metadata": true
   },
   "currency": {
     "enable-stx-mint": true,
     "stx-price": { "value": 100, "updatable": true },
     "enable-mia-mint": true,
-    "mia-price": { "value": 42, "updatable": true },
-    "enable-nyc-mint": true,
-    "nyc-price": { "value": 40, "updatable": true }
+    "mia-price": { "value": 42, "updatable": false }
   },
   "mint": {
     "mint-limit": {

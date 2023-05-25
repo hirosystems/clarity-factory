@@ -18,8 +18,9 @@ import { toUpperSnake } from "../../util/string";
 type UpdatableField = { value: string | number; updatable?: boolean };
 
 export default function buildNftSettings(userSettings: NFTTemplateSettings) {
+  const warnings: string[] = [];
+  const { general, currency, mint } = userSettings;
   /* SANITY CHECKS */
-  const { currency } = userSettings;
   if (!currency?.["enable-stx-mint"] && currency?.["stx-price"]) {
     delete currency?.["stx-price"];
   }
@@ -31,10 +32,11 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   }
 
   /* INIT */
+
   const errors: AllowedErrors = ["ERR_NOT_TOKEN_OWNER"];
 
-  const contractOwner = userSettings.general["contract-owner"]?.value;
-  if (contractOwner) {
+  const enableContractOwner = !!general["enable-contract-owner"];
+  if (enableContractOwner) {
     errors.push("ERR_NOT_CONTRACT_OWNER");
   }
 
@@ -47,7 +49,20 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
 
   const maps: ContractSettings["maps"] = [];
 
-  // DATA-VAR and CONSTANS
+  /* FREEZE METADATA */
+  const enableFreezeMetadata =
+    !!general["enable-freeze-metadata"] && enableContractOwner;
+  if (!!general["enable-freeze-metadata"] && !enableContractOwner) {
+    warnings.push(
+      "Contract owner must be enabled in order to enable the freeze metadata feature"
+    );
+  }
+  if (enableFreezeMetadata) {
+    errors.push("ERR_METADATA_FROZEN");
+    dataVars.push({ name: "metadata-frozen", type: "bool", value: "false" });
+  }
+
+  /* DATA-VAR and CONSTANTS */
   const contractVariables: ContractVariable[] = [];
 
   traverse(schema, {
@@ -77,13 +92,16 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
 
       const initialValue = getClarityValue(type, setting.value);
 
-      if (setting.updatable && !contractOwner) {
-        throw new Error("The ContractOwner is required");
+      if (setting.updatable && !enableContractOwner) {
+        warnings.push(
+          `Contract owner must be enabled for ${name} to be updatable`
+        );
       }
 
       contractVariables.push({
         name,
-        isConst: !setting.updatable,
+        isConst: !setting.updatable || !enableContractOwner,
+        canBeFrozen: schema.canBeFrozen,
         type,
         initialValue,
       });
@@ -104,7 +122,11 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
       updateSettingsFunctions.push(
         t(
           $updateSetting,
-          { ["var-name"]: name, type },
+          {
+            ["var-name"]: name,
+            ["can-be-frozen"]: contractVar.canBeFrozen,
+            type,
+          },
           { variables: contractVariables }
         )
       );
@@ -112,23 +134,23 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   }
 
   /* MINT LIMIT */
-  const hasMintLimit = !!userSettings.mint?.["mint-limit"]?.value;
+  const hasMintLimit = !!mint?.["mint-limit"]?.value;
   if (hasMintLimit) {
     errors.push("ERR_REACHED_MINT_LIMIT");
     maps.push({ name: "mint-count", keyType: "principal", valueType: "uint" });
   }
 
   /* ALLOW LIST */
-  const hasAllowList = !!userSettings.mint?.["allow-list"];
+  const hasAllowList = !!mint?.["allow-list"];
   if (hasAllowList) {
     errors.push("ERR_UNAUTHORIZED");
     maps.push({ name: "allow-list", keyType: "principal", valueType: "bool" });
   }
   const hasAllowAll =
-    !!userSettings.mint?.["allow-list"]?.["allow-all-at-block-height"]?.value;
+    !!mint?.["allow-list"]?.["allow-all-at-block-height"]?.value;
   const allowListAddresses: string[] = [];
   if (hasAllowList) {
-    for (const addr of userSettings.mint?.["allow-list"]?.addresses || []) {
+    for (const addr of mint?.["allow-list"]?.addresses || []) {
       allowListAddresses.push(
         t($mapInsert, { map: "allow-list", key: `'${addr}`, value: "true" })
       );
@@ -142,11 +164,15 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
     errors,
     dataVars,
     maps,
-    templateHead: t($head, { name: userSettings.general.name }),
+    templateHead: t($head, { name: general.name }),
     templateBody: t(
       $body,
       {
-        name: userSettings.general.name,
+        name: general.name,
+        ["enable-freeze-metadata"]: enableFreezeMetadata,
+        ["enable-stx-mint"]: !!currency?.["enable-stx-mint"],
+        ["enable-nyc-mint"]: !!currency?.["enable-nyc-mint"],
+        ["enable-mia-mint"]: !!currency?.["enable-mia-mint"],
         ["update-settings-functions"]: updateSettingsFunctions.join("\n\n"),
         ["has-mint-limit"]: hasMintLimit,
         ["has-allow-list"]: hasAllowList,
@@ -158,7 +184,7 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
     ),
   };
 
-  return baseSettings;
+  return { settings: baseSettings, warnings };
 }
 
 export function validateSettings(

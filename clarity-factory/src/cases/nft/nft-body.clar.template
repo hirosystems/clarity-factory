@@ -1,3 +1,14 @@
+{{if enable-freeze-metadata}}
+;; Once metadata is frozen, it can't be changed later on
+;; It mainly impacts the token-uri
+(define-public (freeze-metadata)
+  (begin
+    (asserts! (is-eq tx-sender {{read(contract-owner)}}) ERR_NOT_CONTRACT_OWNER)
+    (ok (var-set metadata-frozen true))
+  )
+)
+{{endif}}
+
 {{update-settings-functions}}
 
 (define-public (update-artist-address (new-value principal))
@@ -27,9 +38,9 @@
 )
 
 {{if enable-stx-mint}}
-(define-private (mint)
+(define-public (mint)
   (begin
-    (try! (stx-transfer? (* STX_PRICE u1000000) tx-sender (var-get artist-address)))
+    (try! (stx-transfer? (* {{read(stx-price)}} u1000000) tx-sender (var-get artist-address)))
     (try! (mint-helper))
     (ok true)
   )
@@ -37,12 +48,12 @@
 {{endif}}
 
 {{if enable-nyc-mint}}
-(define-private (mint-in-nyc)
+(define-public (mint-in-nyc)
   (begin
     (try! (contract-call?
       'SP2H8PY27SEZ03MWRKS5XABZYQN17ETGQS3527SA5.newyorkcitycoin-token
       transfer
-      NYC_PRICE
+      {{read(nyc-price)}}
       tx-sender
       (var-get artist-address)
       (some 0x00)
@@ -54,12 +65,12 @@
 {{endif}}
 
 {{if enable-mia-mint}}
-(define-private (mint-in-mia)
+(define-public (mint-in-mia)
   (begin
     (try! (contract-call?
       'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token
       transfer
-      MIA_PRICE
+      {{read(mia-price)}}
       tx-sender
       (var-get artist-address)
       (some 0x00)
@@ -99,6 +110,12 @@
     (asserts! (is-addr-allowed-to-mint tx-sender) ERR_UNAUTHORIZED)
     {{endif}}
     (try! (nft-mint? {{name}} token-id tx-sender))
+    {{if has-mint-limit}}
+    (if (is-eq nb-mint u0)
+      (map-insert mint-count tx-sender u1)
+      (map-set mint-count tx-sender (+ nb-mint u1))
+    )
+    {{endif}}
     (var-set last-token-id token-id)
 
     (ok token-id)

@@ -29,7 +29,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
     // TODO: handle and display errors in console, also errors from form?
     let contract = "";
     try {
-      contract = buildSmartContract("nft", formData);
+      contract = buildSmartContract("nft", formData).contract;
     } catch (err) {
       console.log({ err });
     }

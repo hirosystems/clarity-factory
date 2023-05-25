@@ -26,7 +26,7 @@ export function buildSmartContract(
   template: Templates,
   userSettings: TemplateSettings
 ) {
-  const settings = getContractSettings(template, userSettings);
+  const { settings, warnings } = getContractSettings(template, userSettings);
 
   const errConstants = buildErrorDeclaration(settings.errors);
 
@@ -58,5 +58,5 @@ export function buildSmartContract(
     { removeUnknown: false }
   );
 
-  return contract;
+  return { contract, diagnostics: { warnings } };
 }

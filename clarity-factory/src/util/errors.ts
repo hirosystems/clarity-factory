@@ -5,8 +5,9 @@ import $defineConstant from "bundle-text:../templates/components/define-constant
 const availableErrors = {
   ERR_UNAUTHORIZED: "1000",
   ERR_NOT_CONTRACT_OWNER: "1001",
-  ERR_NOT_TOKEN_OWNER: "1002",
-  ERR_REACHED_MINT_LIMIT: "1003",
+  ERR_METADATA_FROZEN: "1002",
+  ERR_NOT_TOKEN_OWNER: "1003",
+  ERR_REACHED_MINT_LIMIT: "1004",
 } as const;
 
 export type AllowedErrors = (keyof typeof availableErrors)[];

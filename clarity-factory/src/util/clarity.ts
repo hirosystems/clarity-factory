@@ -1,5 +1,6 @@
 export function getClarityValue(type: string, value: number | string) {
   if (type === "principal") {
+    if (value === "tx-sender") return value;
     return `'${value}`;
   }
   if (type === "uint") {

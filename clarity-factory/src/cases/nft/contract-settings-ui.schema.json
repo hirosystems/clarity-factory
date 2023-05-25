@@ -23,17 +23,23 @@
           "type": "string",
           "description": "Name of the NFT"
         },
+        "enable-contract-owner": {
+          "type": "boolean",
+          "title": "Enable contract owner",
+          "description": "The contract owner feature enables administration feature such as changing some of contracts parameters after the contract is deployed"
+        },
         "contract-owner": {
           "type": "object",
           "title": "Contract Owner",
-          "description": "Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings.",
+          "description": "Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings. Note: it can also be set to `tx-sender` so that the deployer of the contract will be the owner.",
           "required": ["value"],
           "additionalProperties": false,
           "properties": {
             "value": {
               "type": "string",
               "title": "Owner Address",
-              "clarityType": "principal"
+              "clarityType": "principal",
+              "default": "tx-sender"
             },
             "updatable": {
               "type": "boolean",
@@ -47,6 +53,7 @@
           "description": "Base URI for the NFT image.",
           "required": ["value"],
           "additionalProperties": false,
+          "canBeFrozen": true,
           "properties": {
             "value": {
               "type": "string",
@@ -59,6 +66,11 @@
               "title": "Token URI base can be updated after deploy"
             }
           }
+        },
+        "enable-freeze-metadata": {
+          "type": "boolean",
+          "title": "Add a freeze metadata function",
+          "description": "The contract owner can call thie freeze-metadata method to prevent future changes of the token-uri"
         }
       }
     },

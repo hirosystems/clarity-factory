@@ -3,6 +3,7 @@ import { toUpperSnake } from "./string";
 export type ContractVariable = {
   name: string;
   isConst: boolean;
+  canBeFrozen: boolean;
   type: string;
   initialValue: string;
 };

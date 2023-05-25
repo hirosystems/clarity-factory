@@ -1,6 +1,9 @@
 (define-public (update-{{var-name}} (new-value {{type}}))
   (begin
     (asserts! (is-eq tx-sender {{read(contract-owner)}}) ERR_NOT_CONTRACT_OWNER)
+    {{if can-be-frozen}}
+    (asserts! (not (var-get metadata-frozen)) ERR_METADATA_FROZEN)
+    {{endif}}
     (ok (var-set {{var-name}} new-value))
   )
 )

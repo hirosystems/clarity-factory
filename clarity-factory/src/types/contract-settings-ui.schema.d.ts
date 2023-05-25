@@ -5,10 +5,18 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * The contract owner feature enables administration feature such as changing some of contracts parameters after the contract is deployed
+ */
+export type EnableContractOwner = boolean;
 export type OwnerAddress = string;
 export type OwnerCanBeUpdatedAfterDeploy = boolean;
 export type TokenURIBase1 = string;
 export type TokenURIBaseCanBeUpdatedAfterDeploy = boolean;
+/**
+ * The contract owner can call thie freeze-metadata method to prevent future changes of the token-uri
+ */
+export type AddAFreezeMetadataFunction = boolean;
 export type AcceptSTX = boolean;
 export type AcceptNYC = boolean;
 export type AcceptMIA = boolean;
@@ -36,11 +44,13 @@ export interface GeneralSettings {
    * Name of the NFT
    */
   name: string;
+  "enable-contract-owner"?: EnableContractOwner;
   "contract-owner"?: ContractOwner;
   "token-uri-base": TokenURIBase;
+  "enable-freeze-metadata"?: AddAFreezeMetadataFunction;
 }
 /**
- * Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings.
+ * Stacks address for the owner of this NFT contract. This address will be allowed to perform changes to the NFT contract's settings. Note: it can also be set to `tx-sender` so that the deployer of the contract will be the owner.
  */
 export interface ContractOwner {
   value: OwnerAddress;

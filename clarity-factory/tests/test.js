@@ -12,4 +12,5 @@ try {
   fs.mkdirSync("./tests/temp", { recursive: true });
 }
 
-fs.writeFileSync("./tests/temp/result.clar", result);
+console.log(result);
+fs.writeFileSync("./tests/temp/result.clar", result.contract);
