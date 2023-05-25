@@ -11,7 +11,7 @@ import { Theme as ChakraUITheme } from "@rjsf/chakra-ui";
 import { UiSchema } from "@rjsf/utils";
 import cases, { Cases } from "./cases";
 import styles from "../../styles/Form.module.css";
-import { NFTTemplateSettings } from "../../../clarity-factory/src/types/contract-settings-ui.schema";
+import { NFTTemplateSettings } from "../../../clarity-factory/src/types/contract-settings-nft.schema";
 import FormField from "../../common/components/formField";
 import { cloneDeep, get, set } from "lodash";
 import NftForm from "./cases/nft/form";

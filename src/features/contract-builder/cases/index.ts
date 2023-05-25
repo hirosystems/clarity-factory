@@ -1,5 +1,5 @@
 import { RJSFSchema } from "@rjsf/utils";
-import nftSchema from "../../../../clarity-factory/src/cases/nft/contract-settings-ui.schema.json";
+import nftSchema from "../../../../clarity-factory/src/cases/nft/contract-settings-nft.schema.json";
 import { initialData as nftinitialData } from "./nft/form-config";
 
 export enum Cases {

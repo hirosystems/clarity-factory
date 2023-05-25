@@ -1,4 +1,4 @@
-import { NFTTemplateSettings } from "../../../../../clarity-factory/src/types/contract-settings-ui.schema";
+import { NFTTemplateSettings } from "../../../../../clarity-factory/src/types/contract-settings-nft.schema";
 
 export const initialData: NFTTemplateSettings = {
   general: {

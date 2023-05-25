@@ -1,20 +1,14 @@
-import { FC, useEffect } from "react";
-import { NFTTemplateSettings } from "../../../../../clarity-factory/src/types/contract-settings-ui.schema";
+import { FC, useEffect, useState } from "react";
+import { NFTTemplateSettings } from "../../../../../clarity-factory/src/types/contract-settings-nft.schema";
 import FormField from "../../../../common/components/formField";
 import { cloneDeep, get, set, unset } from "lodash";
 import FormSection from "../../../../common/components/formSection";
-import {
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Switch,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Flex, Heading, Icon, Tooltip } from "@chakra-ui/react";
 import InputInfoLabel from "../../../../common/components/inputInfoLabel";
 import CheckboxSquare from "../../../../common/components/checkboxSquare";
+import SwitchField from "../../../../common/components/switchField";
+import { AiOutlineQuestion, AiOutlineQuestionCircle } from "react-icons/ai";
+import ListField from "../../../../common/components/listField";
 
 const FIELDS = {
   NAME: "general.name",
@@ -34,6 +28,15 @@ const FIELDS = {
   NYC_PRICE_UPDATABLE: "currency.nyc-price.updatable",
   MIA_PRICE: "currency.mia-price.value",
   MIA_PRICE_UPDATABLE: "currency.mia-price.updatable",
+  MINT_LIMIT: "mint.mint-limit.value",
+  MINT_LIMIT_PARENT: "mint.mint-limit",
+  MINT_LIMIT_UPDATABLE: "mint.mint-limit.updatable",
+  ALLOW_LIST_ADDRESSES: "mint.allow-list.addresses",
+  ALLOW_LIST_PARENT: "mint.allow-list",
+  ALLOW_ALL_AT_BLOCK_HEIGHT: "mint.allow-list.allow-all-at-block-height.value",
+  ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE:
+    "mint.allow-list.allow-all-at-block-height.updatable",
+  ALLOW_ALL_AT_BLOCK_HEIGHT_PARENT: "mint.allow-list.allow-all-at-block-height",
 };
 
 interface NftFormProps {
@@ -42,10 +45,14 @@ interface NftFormProps {
 }
 
 const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
+  const [showEarlyBirdSection, setShowEarlyBirdSection] = useState(false);
+  const [showAllowAtBlockHeightSection, setShowAllowAtBlockHeightSection] =
+    useState(false);
+
   // Handle text input changes
   const getTextChangeHandler = (field) => {
     return (e) => {
-      // Can be optimized later
+      // Probably can be optimized later
       const newFormData = cloneDeep(formData);
       const newValue = e.target.value;
       if (!newValue) {
@@ -58,6 +65,7 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
     };
   };
 
+  // Handle switch/checkbox input changes
   const getSwitchChangeHandler = (field) => {
     return (e) => {
       const newFormData = cloneDeep(formData);
@@ -66,7 +74,16 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
     };
   };
 
-  // Special form side effects
+  // Handle plain input changes
+  const getChangeHandler = (field) => {
+    return (newVal) => {
+      const newFormData = cloneDeep(formData);
+      set(newFormData, field, newVal);
+      onChange(newFormData);
+    };
+  };
+
+  /* Special form side effects */
 
   // Clear dependent data when contract owner is disabled
   const enableContractOwner = get(formData, FIELDS.ENABLE_CONTRACT_OWNER);
@@ -78,6 +95,37 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
       onChange(newFormData);
     }
   }, [enableContractOwner]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Clear object when mint limit is removed
+  const mintLimit = get(formData, FIELDS.MINT_LIMIT);
+  useEffect(() => {
+    if (!mintLimit) {
+      const newFormData = cloneDeep(formData);
+      unset(newFormData, FIELDS.MINT_LIMIT_PARENT);
+      onChange(newFormData);
+    }
+  }, [mintLimit]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Add blank starter address when early bird section is enabled
+  // Clear allow list data when section is disabled
+  useEffect(() => {
+    const newFormData = cloneDeep(formData);
+    if (showEarlyBirdSection) {
+      set(newFormData, FIELDS.ALLOW_LIST_ADDRESSES, [""]);
+    } else {
+      unset(newFormData, FIELDS.ALLOW_LIST_PARENT);
+    }
+    onChange(newFormData);
+  }, [showEarlyBirdSection]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Clear allow at block height data when section is disabled
+  useEffect(() => {
+    if (!showAllowAtBlockHeightSection) {
+      const newFormData = cloneDeep(formData);
+      unset(newFormData, FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_PARENT);
+      onChange(newFormData);
+    }
+  }, [showAllowAtBlockHeightSection]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Flex direction="column" gap="4">
@@ -100,28 +148,20 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
             <InputInfoLabel>Base URI for the NFT image.</InputInfoLabel>
           </Flex>
 
-          <FormControl display="flex" alignItems="center" gap="3">
-            <Switch
-              id="uri-updatable"
-              isChecked={get(formData, FIELDS.TOKEN_URI_BASE_UPDATABLE)}
-              onChange={getSwitchChangeHandler(FIELDS.TOKEN_URI_BASE_UPDATABLE)}
-            />
-            <FormLabel htmlFor="uri-updatable" mb="0">
-              Base URI can be updated after deploy
-            </FormLabel>
-          </FormControl>
+          <SwitchField
+            id="uri-updatable"
+            isChecked={get(formData, FIELDS.TOKEN_URI_BASE_UPDATABLE)}
+            onChange={getSwitchChangeHandler(FIELDS.TOKEN_URI_BASE_UPDATABLE)}
+            label="Base URI can be updated after deploy"
+          />
 
           <Flex direction="column" gap="2">
-            <FormControl display="flex" alignItems="center" gap="3">
-              <Switch
-                id="contract-owner"
-                isChecked={get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                onChange={getSwitchChangeHandler(FIELDS.ENABLE_CONTRACT_OWNER)}
-              />
-              <FormLabel htmlFor="contract-owner" mb="0">
-                Enable Contract Owner
-              </FormLabel>
-            </FormControl>
+            <SwitchField
+              id="contract-owner"
+              isChecked={get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+              onChange={getSwitchChangeHandler(FIELDS.ENABLE_CONTRACT_OWNER)}
+              label="Enable Contract Owner"
+            />
             <InputInfoLabel>
               The contract owner feature enables administration features, such
               as changing some of the contract&apos;s parameters after it is
@@ -138,47 +178,27 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
                 onChange={getTextChangeHandler(FIELDS.CONTRACT_OWNER)}
                 isRequired
               />
-              <FormControl display="flex" alignItems="center" gap="3">
-                <Switch
-                  id="contract-owner-updatable"
-                  isChecked={get(formData, FIELDS.CONTRACT_OWNER_UPDATABLE)}
-                  isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                  onChange={getSwitchChangeHandler(
-                    FIELDS.CONTRACT_OWNER_UPDATABLE
-                  )}
-                />
-                <FormLabel htmlFor="contract-owner-updatable" mb="0">
-                  Owner can be updated after deploy
-                </FormLabel>
-              </FormControl>
+              <SwitchField
+                id="contract-owner-updatable"
+                isChecked={get(formData, FIELDS.CONTRACT_OWNER_UPDATABLE)}
+                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                onChange={getSwitchChangeHandler(
+                  FIELDS.CONTRACT_OWNER_UPDATABLE
+                )}
+                label="Owner can be updated after deploy"
+              />
             </>
           ) : null}
 
           <Flex direction="column" gap="2">
-            <FormControl display="flex" alignItems="center" gap="3">
-              <Tooltip
-                placement="bottom"
-                label={
-                  !get(formData, FIELDS.ENABLE_CONTRACT_OWNER)
-                    ? "Contract Owner must be enabled"
-                    : null
-                }
-              >
-                <span>
-                  <Switch
-                    id="freeze-metadata"
-                    isChecked={get(formData, FIELDS.ENABLE_FREEZE_METADATA)}
-                    isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                    onChange={getSwitchChangeHandler(
-                      FIELDS.ENABLE_FREEZE_METADATA
-                    )}
-                  />
-                </span>
-              </Tooltip>
-              <FormLabel htmlFor="freeze-metadata" mb="0">
-                Include a function to freeze metadata
-              </FormLabel>
-            </FormControl>
+            <SwitchField
+              id="freeze-metadata"
+              isChecked={get(formData, FIELDS.ENABLE_FREEZE_METADATA)}
+              isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+              disabledMessage="Contract Owner must be enabled"
+              onChange={getSwitchChangeHandler(FIELDS.ENABLE_FREEZE_METADATA)}
+              label="Include a function to freeze metadata"
+            />
             <InputInfoLabel>
               The contract owner will be able to call this function to prevent
               any future changes to the token URI.
@@ -218,30 +238,14 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
                 onChange={getTextChangeHandler(FIELDS.STX_PRICE)}
                 isRequired
               />
-              <FormControl display="flex" alignItems="center" gap="3">
-                <Tooltip
-                  placement="bottom"
-                  label={
-                    !get(formData, FIELDS.ENABLE_CONTRACT_OWNER)
-                      ? "Contract Owner must be enabled"
-                      : null
-                  }
-                >
-                  <span>
-                    <Switch
-                      id="stx-price-updatable"
-                      isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                      isChecked={get(formData, FIELDS.STX_PRICE_UPDATABLE)}
-                      onChange={getSwitchChangeHandler(
-                        FIELDS.STX_PRICE_UPDATABLE
-                      )}
-                    />
-                  </span>
-                </Tooltip>
-                <FormLabel htmlFor="freeze-metadata" mb="0">
-                  Value can be updated after deploy
-                </FormLabel>
-              </FormControl>
+              <SwitchField
+                id="stx-price-updatable"
+                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                disabledMessage="Contract Owner must be enabled"
+                isChecked={get(formData, FIELDS.STX_PRICE_UPDATABLE)}
+                onChange={getSwitchChangeHandler(FIELDS.STX_PRICE_UPDATABLE)}
+                label="Value can be updated after deploy"
+              />
             </Flex>
           ) : null}
 
@@ -255,30 +259,14 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
                 onChange={getTextChangeHandler(FIELDS.MIA_PRICE)}
                 isRequired
               />
-              <FormControl display="flex" alignItems="center" gap="3">
-                <Tooltip
-                  placement="bottom"
-                  label={
-                    !get(formData, FIELDS.ENABLE_CONTRACT_OWNER)
-                      ? "Contract Owner must be enabled"
-                      : null
-                  }
-                >
-                  <span>
-                    <Switch
-                      id="mia-price-updatable"
-                      isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                      isChecked={get(formData, FIELDS.MIA_PRICE_UPDATABLE)}
-                      onChange={getSwitchChangeHandler(
-                        FIELDS.MIA_PRICE_UPDATABLE
-                      )}
-                    />
-                  </span>
-                </Tooltip>
-                <FormLabel htmlFor="freeze-metadata" mb="0">
-                  Value can be updated after deploy
-                </FormLabel>
-              </FormControl>
+              <SwitchField
+                id="mia-price-updatable"
+                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                isChecked={get(formData, FIELDS.MIA_PRICE_UPDATABLE)}
+                onChange={getSwitchChangeHandler(FIELDS.MIA_PRICE_UPDATABLE)}
+                disabledMessage="Contract Owner must be enabled"
+                label="Value can be updated after deploy"
+              />
             </Flex>
           ) : null}
 
@@ -292,32 +280,117 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
                 onChange={getTextChangeHandler(FIELDS.NYC_PRICE)}
                 isRequired
               />
-              <FormControl display="flex" alignItems="center" gap="3">
-                <Tooltip
-                  placement="bottom"
-                  label={
-                    !get(formData, FIELDS.ENABLE_CONTRACT_OWNER)
-                      ? "Contract Owner must be enabled"
-                      : null
-                  }
-                >
-                  <span>
-                    <Switch
-                      id="mia-price-updatable"
-                      isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                      isChecked={get(formData, FIELDS.NYC_PRICE_UPDATABLE)}
-                      onChange={getSwitchChangeHandler(
-                        FIELDS.NYC_PRICE_UPDATABLE
-                      )}
-                    />
-                  </span>
-                </Tooltip>
-                <FormLabel htmlFor="freeze-metadata" mb="0">
-                  Value can be updated after deploy
-                </FormLabel>
-              </FormControl>
+              <SwitchField
+                id="nyc-price-updatable"
+                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                isChecked={get(formData, FIELDS.NYC_PRICE_UPDATABLE)}
+                onChange={getSwitchChangeHandler(FIELDS.NYC_PRICE_UPDATABLE)}
+                disabledMessage="Contract Owner must be enabled"
+                label="Value can be updated after deploy"
+              />
             </Flex>
           ) : null}
+        </Flex>
+      </FormSection>
+
+      {/* Mint Settings */}
+      <FormSection label="Mint Settings">
+        <Flex direction="column" gap="8">
+          {/* Mint Limit */}
+          <Flex direction="column" gap="3">
+            <Flex direction="column" gap="2">
+              <FormField
+                label="Mint Limit"
+                value={get(formData, FIELDS.MINT_LIMIT)}
+                onChange={getTextChangeHandler(FIELDS.MINT_LIMIT)}
+              />
+              <InputInfoLabel>
+                Mint limit per STX address. Leave empty for unlimited.
+              </InputInfoLabel>
+            </Flex>
+            <SwitchField
+              id="mint-limit-updatable"
+              isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+              isChecked={get(formData, FIELDS.MINT_LIMIT_UPDATABLE)}
+              onChange={getSwitchChangeHandler(FIELDS.MINT_LIMIT_UPDATABLE)}
+              disabledMessage="Contract Owner must be enabled"
+              label="Mint limit can be updated after deploy"
+            />
+          </Flex>
+
+          {/* Early bird list */}
+          <Flex direction="column" gap="4">
+            <Flex gap="2" align="center">
+              <CheckboxSquare
+                label="Enable Early Bird Access"
+                isChecked={showEarlyBirdSection}
+                onChange={(e) => {
+                  setShowEarlyBirdSection(e.target.checked);
+                }}
+              />
+              <Tooltip
+                placement="right"
+                label="Allow addresses to claim early access to your NFT."
+              >
+                <Flex align="center">
+                  <Icon as={AiOutlineQuestionCircle} boxSize="4" />
+                </Flex>
+              </Tooltip>
+            </Flex>
+            {showEarlyBirdSection ? (
+              <ListField
+                label="Allowed STX Address"
+                value={get(formData, FIELDS.ALLOW_LIST_ADDRESSES)}
+                onChange={getChangeHandler(FIELDS.ALLOW_LIST_ADDRESSES)}
+              />
+            ) : null}
+          </Flex>
+
+          {/* Allow at block height */}
+          <Flex direction="column" gap="4">
+            <Flex gap="2" align="center">
+              <CheckboxSquare
+                label="Allow all at block height"
+                isChecked={showAllowAtBlockHeightSection}
+                onChange={(e) => {
+                  setShowAllowAtBlockHeightSection(e.target.checked);
+                }}
+              />
+              <Tooltip
+                placement="right"
+                label="Allow everyone to mint from this block height. Leave empty to disable mint for all."
+              >
+                <Flex align="center">
+                  <Icon as={AiOutlineQuestionCircle} boxSize="4" />
+                </Flex>
+              </Tooltip>
+            </Flex>
+            {showAllowAtBlockHeightSection ? (
+              <Flex direction="column" gap="4">
+                <FormField
+                  label="Block height"
+                  isRequired
+                  value={get(formData, FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT)}
+                  onChange={getTextChangeHandler(
+                    FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT
+                  )}
+                />
+                <SwitchField
+                  id="block-height-updatable"
+                  isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                  isChecked={get(
+                    formData,
+                    FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE
+                  )}
+                  onChange={getSwitchChangeHandler(
+                    FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE
+                  )}
+                  disabledMessage="Contract Owner must be enabled"
+                  label="Block height can be updated after deploy"
+                />
+              </Flex>
+            ) : null}
+          </Flex>
         </Flex>
       </FormSection>
     </Flex>
