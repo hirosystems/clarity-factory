@@ -13,18 +13,16 @@ const availableErrors = {
 export type AllowedErrors = (keyof typeof availableErrors)[];
 
 export function buildErrorDeclaration(errors: AllowedErrors) {
+  if (!errors) return "";
   return errors
-    ? errors
-        .sort(
-          (l, r) =>
-            parseInt(availableErrors[l]!) - parseInt(availableErrors[r]!)
-        )
-        .map((error) =>
-          t($defineConstant, {
-            name: error,
-            value: `(err u${availableErrors[error]})`,
-          })
-        )
-        .join("\n")
-    : null;
+    .sort(
+      (l, r) => parseInt(availableErrors[l]!) - parseInt(availableErrors[r]!)
+    )
+    .map((error) =>
+      t($defineConstant, {
+        name: error,
+        value: `(err u${availableErrors[error]})`,
+      })
+    )
+    .join("\n");
 }

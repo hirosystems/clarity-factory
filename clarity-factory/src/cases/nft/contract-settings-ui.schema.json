@@ -124,7 +124,8 @@
             "value": {
               "type": "number",
               "title": "Value in NYC",
-              "clarityType": "uint"
+              "clarityType": "uint",
+              "default": 0
             },
             "updatable": {
               "type": "boolean",
@@ -142,7 +143,8 @@
             "value": {
               "type": "number",
               "title": "Value in MIA",
-              "clarityType": "uint"
+              "clarityType": "uint",
+              "default": 0
             },
             "updatable": {
               "type": "boolean",
