@@ -8,7 +8,7 @@ interface TwoColumnLayoutProps {
 
 const TwoColumnLayout: FC<TwoColumnLayoutProps> = ({ left, right }) => {
   return (
-    <Flex as="main" h="100vh">
+    <Flex as="main" h="100vh" minW="900px">
       <Flex overflowY="scroll" p="4" basis="50%" grow="0" shrink="0">
         {left}
       </Flex>

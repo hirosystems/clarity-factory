@@ -2,6 +2,7 @@
 // Must be used as a controlled input.
 
 import {
+  Box,
   FormControl,
   FormLabel,
   Input,
@@ -9,6 +10,7 @@ import {
   InputProps,
   InputRightElement,
 } from "@chakra-ui/react";
+import { isEmpty, isNil, isString } from "lodash";
 import { ChangeEventHandler, FC, ReactNode, useState } from "react";
 
 interface FormFieldProps extends InputProps {
@@ -23,6 +25,7 @@ const FormField: FC<FormFieldProps> = ({
   onChange,
   label,
   rightElement,
+  isRequired,
   ...inputProps
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -40,6 +43,9 @@ const FormField: FC<FormFieldProps> = ({
 
   const displayLabelAsPlaceholder =
     !isFocused && (!value || value.length === 0);
+
+  const isMissing =
+    isRequired && ((isString(value) && isEmpty(value)) || isNil(value));
 
   return (
     <FormControl w="full">
@@ -62,8 +68,8 @@ const FormField: FC<FormFieldProps> = ({
           h="48px"
           pt="13px"
           onFocus={handleFocus}
-          // paddingInlineStart="10px"
           onBlur={handleBlur}
+          borderColor={isMissing ? "red.600" : "inherit"}
         />
         {rightElement && (
           <InputRightElement w="auto" h="auto" top="8px" right="8px">
@@ -71,6 +77,11 @@ const FormField: FC<FormFieldProps> = ({
           </InputRightElement>
         )}
       </InputGroup>
+      {isMissing ? (
+        <Box color="red.500" fontSize="xs" ml="1" mt="1">
+          Required
+        </Box>
+      ) : null}
     </FormControl>
   );
 };

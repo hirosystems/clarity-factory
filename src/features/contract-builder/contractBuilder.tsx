@@ -27,6 +27,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
   const onFormChange = (formData) => {
     setFormData(formData);
     // TODO: handle and display errors in console, also errors from form?
+    console.log("Change to form data; generating contract");
     console.log({ formData });
     let contract = "";
     try {

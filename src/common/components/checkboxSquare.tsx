@@ -20,6 +20,7 @@ const CheckboxSquare: FC<CheckboxSquareProps> = ({
       borderColor="gray.500"
       bg={isChecked ? "gray.500" : "none"}
       borderRadius="md"
+      whiteSpace="nowrap"
       {...checkboxProps}
     >
       {label}
