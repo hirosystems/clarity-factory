@@ -51,14 +51,14 @@ const ContractSettingsForm: FC<FormProps> = ({
 
   return (
     <Box mb="20" w="full" className={styles.formWrapper}>
-      {/* {form} */}
-      <Form
+      {form}
+      {/* <Form
         schema={schema}
         uiSchema={globalUiSchema}
         formData={formData}
         validator={validator}
         onChange={handleChange}
-      />
+      /> */}
     </Box>
   );
 };

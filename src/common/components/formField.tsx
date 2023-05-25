@@ -48,12 +48,9 @@ const FormField: FC<FormFieldProps> = ({
         zIndex="1"
         marginTop="14px"
         marginLeft="16px"
-        transform={
-          displayLabelAsPlaceholder
-            ? "scale(1)"
-            : "scale(0.8) translate(-10px, -14px)"
-        }
-        transition="transform 250ms"
+        transform={displayLabelAsPlaceholder ? "" : "translateY(-64%)"}
+        fontSize={displayLabelAsPlaceholder ? "14px" : "11px"}
+        transition="all 250ms"
       >
         {label}
       </FormLabel>
@@ -65,6 +62,7 @@ const FormField: FC<FormFieldProps> = ({
           h="48px"
           pt="13px"
           onFocus={handleFocus}
+          // paddingInlineStart="10px"
           onBlur={handleBlur}
         />
         {rightElement && (

@@ -27,13 +27,13 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
   const onFormChange = (formData) => {
     setFormData(formData);
     // TODO: handle and display errors in console, also errors from form?
+    console.log({ formData });
     let contract = "";
     try {
       contract = buildSmartContract("nft", formData).contract;
     } catch (err) {
       console.log({ err });
     }
-    console.log({ contract });
     setContractBody(contract);
   };
 
