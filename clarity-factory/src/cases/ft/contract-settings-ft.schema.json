@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "FT Template Settings",
+  "required": ["general"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "general": { "$ref": "#/definitions/General" },
+    "mint": { "$ref": "#/definitions/Mint" }
+  },
+
+  "definitions": {
+    "General": {
+      "type": "object",
+      "title": "General settings",
+      "description": "",
+      "required": ["name", "token-uri-base"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name or tick of the FT"
+        },
+        "fullname": {
+          "type": "string",
+          "description": "Human readable name of the token"
+        },
+        "max-supply": {
+          "type": "number",
+          "title": "Token URI base",
+          "description": "Maximum supply of the token.",
+          "default": 21000000
+        },
+        "token-uri-base": {
+          "type": "string",
+          "title": "Token URI base",
+          "description": "Base URI for the FT metadata (see SIP-016). Typically a `https`, `ar`, `ipfs`, `sia` uri.",
+          "default": "ipfs://.../"
+        }
+      }
+    },
+
+    "Mint": {
+      "type": "object",
+      "title": "Mint settings",
+      "description": "Mint settings such mint price and max mintable amount per address",
+      "additionalProperties": false,
+      "properties": {
+        "mint-limit": {
+          "type": "number",
+          "title": "Mint limit",
+          "description": "Mint limit per STX address. Leave empty for unlimited.",
+          "default": 1000
+        },
+        "enable-burn": {
+          "type": "boolean",
+          "title": "Enable burn",
+          "description": "Token holders will be able to call the ft-burn method.",
+          "default": true
+        }
+      }
+    }
+  }
+}

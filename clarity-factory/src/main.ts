@@ -8,24 +8,43 @@ import $map from "bundle-text:./templates/components/define-map.clar.template";
 import buildNftSettings from "./cases/nft/nft";
 import t from "./util/t";
 import { buildErrorDeclaration } from "./util/errors";
-import { NFTTemplateSettings } from "./types/contract-settings.schema";
+import { NFTTemplateSettings } from "./types/contract-settings-nft.schema";
+import { FTTemplateSettings } from "./types/contract-settings-ft.schema";
+import buildFtSettings from "./cases/ft/ft";
 
-const templates = ["nft"] as const;
+const templates = ["nft", "ft"] as const;
 
 type Templates = (typeof templates)[number];
-type TemplateSettings = NFTTemplateSettings;
+type TemplateSettings = NFTTemplateSettings | FTTemplateSettings;
+
+export type SmartContract = {
+  contract: string;
+  diagnostics: { warnings: string[] };
+  userSettings: TemplateSettings;
+};
 
 function getContractSettings(template: Templates, settings: TemplateSettings) {
   if (template === "nft") {
-    return buildNftSettings(settings);
+    return buildNftSettings(settings as NFTTemplateSettings);
+  }
+  if (template === "ft") {
+    return buildFtSettings(settings as FTTemplateSettings);
   }
   throw new Error("invalid template");
 }
 
 export function buildSmartContract(
+  template: "ft",
+  userSettings: FTTemplateSettings
+): SmartContract;
+export function buildSmartContract(
+  template: "nft",
+  userSettings: NFTTemplateSettings
+): SmartContract;
+export function buildSmartContract(
   template: Templates,
   userSettings: TemplateSettings
-) {
+): SmartContract {
   const clonedSettings = structuredClone(userSettings);
   const {
     settings,

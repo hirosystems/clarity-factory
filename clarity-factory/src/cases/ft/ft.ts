@@ -1,53 +1,27 @@
 import traverse from "json-schema-traverse";
 
-import $head from "bundle-text:./nft-head.clar.template";
-import $body from "bundle-text:./nft-body.clar.template";
+import $head from "bundle-text:./ft-head.clar.template";
+import $body from "bundle-text:./ft-body.clar.template";
 import $updateSetting from "bundle-text:../../templates/components/update-owner-only-setting.clar.template";
-import $mapInsert from "bundle-text:../../templates/components/map-insert.clar.template";
 
-import schema from "./contract-settings-nft.schema.json";
+import schema from "./contract-settings-ft.schema.json";
 
 import t, { ContractVariable } from "../../util/t";
 import { getProp } from "../../util/literal";
 import type { AllowedErrors } from "../../util/errors";
 import type { ContractSettings } from "../../types/contract-settings";
-import type { NFTTemplateSettings } from "../../types/contract-settings-nft.schema";
+import type { FTTemplateSettings } from "../../types/contract-settings-ft.schema";
 import { getClarityValue } from "../../util/clarity";
 import { toUpperSnake } from "../../util/string";
 
 type UpdatableField = { value: string | number; updatable?: boolean };
 
-export default function buildNftSettings(userSettings: NFTTemplateSettings) {
+export default function buildFtSettings(userSettings: FTTemplateSettings) {
   const warnings: string[] = [];
-  const { general, currency, mint } = userSettings;
-  /* SANITY CHECKS */
-  if (!currency?.["enable-stx-mint"] && currency?.["stx-price"]) {
-    delete currency?.["stx-price"];
-  }
-  if (!currency?.["enable-nyc-mint"] && currency?.["nyc-price"]) {
-    delete currency?.["nyc-price"];
-  }
-  if (!currency?.["enable-mia-mint"] && currency?.["mia-price"]) {
-    delete currency?.["mia-price"];
-  }
+  const { general, mint } = userSettings;
 
   /* INIT */
   const errors: AllowedErrors = ["ERR_NOT_TOKEN_OWNER"];
-
-  const enableContractOwner = !!general["enable-contract-owner"];
-  if (enableContractOwner) {
-    errors.push("ERR_NOT_CONTRACT_OWNER");
-    if (!general["contract-owner"]?.value) {
-      general["contract-owner"] = { value: "tx-sender" };
-    }
-  } else {
-    if (
-      general.hasOwnProperty("contract-owner") &&
-      typeof general["contract-owner"] === "object"
-    ) {
-      general["contract-owner"] = undefined;
-    }
-  }
 
   const dataVars: ContractSettings["dataVars"] = [
     { name: "artist-address", type: "principal", value: "tx-sender" },
@@ -57,19 +31,6 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   const constants: ContractSettings["constants"] = [];
 
   const maps: ContractSettings["maps"] = [];
-
-  /* FREEZE METADATA */
-  const enableFreezeMetadata =
-    !!general["enable-freeze-metadata"] && enableContractOwner;
-  if (!!general["enable-freeze-metadata"] && !enableContractOwner) {
-    warnings.push(
-      "Contract owner must be enabled in order to enable the freeze metadata feature"
-    );
-  }
-  if (enableFreezeMetadata) {
-    errors.push("ERR_METADATA_FROZEN");
-    dataVars.push({ name: "metadata-frozen", type: "bool", value: "false" });
-  }
 
   /* DATA-VAR and CONSTANTS */
   const contractVariables: ContractVariable[] = [];
@@ -101,15 +62,9 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
 
       const initialValue = getClarityValue(type, setting.value);
 
-      if (setting.updatable && !enableContractOwner) {
-        warnings.push(
-          `Contract owner must be enabled for ${name} to be updatable`
-        );
-      }
-
       contractVariables.push({
         name,
-        isConst: !setting.updatable || !enableContractOwner,
+        isConst: !setting.updatable,
         canBeFrozen: schema.canBeFrozen,
         type,
         initialValue,
@@ -143,32 +98,17 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   }
 
   /* MINT LIMIT */
-  const hasMintLimit = !!mint?.["mint-limit"]?.value;
+  const hasMintLimit = !!mint?.["mint-limit"];
   if (hasMintLimit) {
     errors.push("ERR_REACHED_MINT_LIMIT");
     maps.push({ name: "mint-count", keyType: "principal", valueType: "uint" });
   }
 
-  /* ALLOW LIST */
-  const hasAllowList = !!mint?.["allow-list"];
-  if (hasAllowList) {
-    errors.push("ERR_UNAUTHORIZED");
-    maps.push({ name: "allow-list", keyType: "principal", valueType: "bool" });
-  }
-  const hasAllowAll =
-    !!mint?.["allow-list"]?.["allow-all-at-block-height"]?.value;
-  const allowListAddresses: string[] = [];
-  if (hasAllowList) {
-    for (const addr of mint?.["allow-list"]?.addresses || []) {
-      allowListAddresses.push(
-        t($mapInsert, { map: "allow-list", key: `'${addr}`, value: "true" })
-      );
-    }
-  }
-
   /* BUILD SETTINGS */
   const baseSettings: ContractSettings = {
-    traits: ["SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait"],
+    traits: [
+      "SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait",
+    ],
     constants,
     errors,
     dataVars,
@@ -178,16 +118,8 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
       $body,
       {
         name: general.name,
-        ["enable-freeze-metadata"]: enableFreezeMetadata,
-        ["enable-stx-mint"]: !!currency?.["enable-stx-mint"],
-        ["enable-nyc-mint"]: !!currency?.["enable-nyc-mint"],
-        ["enable-mia-mint"]: !!currency?.["enable-mia-mint"],
         ["update-settings-functions"]: updateSettingsFunctions.join("\n\n"),
         ["has-mint-limit"]: hasMintLimit,
-        ["has-allow-list"]: hasAllowList,
-        ["has-allow-list-and-all"]: hasAllowList && hasAllowAll,
-        ["has-allow-list-only"]: hasAllowList && !hasAllowAll,
-        ["allow-list-addresses"]: allowListAddresses.join("\n  "),
       },
       { variables: contractVariables }
     ),
@@ -196,14 +128,14 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   return {
     settings: baseSettings,
     warnings,
-    userSettings: { general, currency, mint },
+    userSettings: { general, mint },
   };
 }
 
 export function validateSettings(
   settings: any
-): settings is NFTTemplateSettings {
-  if (settings.template !== "nft") throw new Error("invalid template type");
+): settings is FTTemplateSettings {
+  if (settings.template !== "ft") throw new Error("invalid template type");
   // @todo
   return true;
 }

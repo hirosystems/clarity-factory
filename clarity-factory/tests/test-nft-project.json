@@ -1,5 +1,5 @@
 {
-  "$schema": "../src/cases/nft/contract-settings.schema.json",
+  "$schema": "../src/cases/nft/contract-settings-nft.schema.json",
   "general": {
     "name": "awesome-nft",
     "token-uri-base": {

@@ -1,0 +1,13 @@
+{
+  "$schema": "../src/cases/ft/contract-settings-ft.schema.json",
+  "general": {
+    "name": "FTT",
+    "fullname": "FT Token",
+    "token-uri-base": "ipfs://xxuiAffPZmcqyV/",
+    "max-supply": 21000000
+  },
+  "mint": {
+    "mint-limit": 1000,
+    "enable-burn": true
+  }
+}
