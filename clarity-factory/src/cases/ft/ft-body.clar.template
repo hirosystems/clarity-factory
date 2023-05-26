@@ -34,7 +34,6 @@
   )
 )
 
-
 (define-public (burn (count uint))
   {{if enable-burn}}
   (ft-burn? {{tick}} count tx-sender)

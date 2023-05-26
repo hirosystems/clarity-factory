@@ -133,7 +133,7 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
           $updateSetting,
           {
             ["var-name"]: name,
-            ["can-be-frozen"]: contractVar.canBeFrozen,
+            ["can-be-frozen"]: contractVar.canBeFrozen && enableFreezeMetadata,
             type,
           },
           { variables: contractVariables }
