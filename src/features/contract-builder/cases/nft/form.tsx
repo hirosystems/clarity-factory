@@ -102,7 +102,10 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange, displayLarge }) => {
     <Flex direction="column" gap="4">
       <Heading size="4">Build Your NFT</Heading>
 
-      <Flex direction={displayLarge ? "row" : "column"} gap={4}>
+      <Flex
+        direction={{ base: "column", lg: displayLarge ? "row" : "column" }}
+        gap={4}
+      >
         {/* General Settings */}
         <Flex
           width={displayLarge ? "50%" : "full"}
