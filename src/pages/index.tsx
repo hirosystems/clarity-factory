@@ -15,7 +15,8 @@ import Link from "next/link";
 
 export default function Home() {
   const [showComingSoon, setShowComingSoon] = useState(false);
-  const [showContractPreview, setShowContractPreview] = useState(false);
+  const [showNFTContractPreview, setShowNFTContractPreview] = useState(false);
+  const [showFTContractPreview, setShowFTContractPreview] = useState(false);
 
   const [creatingContract, setCreatingContract] = useState(false);
   const [creatingTemplate, setCreatingTemplate] = useState<"nft" | "ft" | null>(
@@ -135,8 +136,8 @@ export default function Home() {
                       </Box>
                       <Flex direction="column" w="full">
                         <div
-                          onMouseEnter={() => setShowContractPreview(true)}
-                          onMouseLeave={() => setShowContractPreview(false)}
+                          onMouseEnter={() => setShowNFTContractPreview(true)}
+                          onMouseLeave={() => setShowNFTContractPreview(false)}
                         >
                           <Button
                             size="lg"
@@ -148,8 +149,8 @@ export default function Home() {
                           </Button>
                         </div>
                         <div
-                          onMouseEnter={() => setShowContractPreview(true)}
-                          onMouseLeave={() => setShowContractPreview(false)}
+                          onMouseEnter={() => setShowFTContractPreview(true)}
+                          onMouseLeave={() => setShowFTContractPreview(false)}
                         >
                           <Button
                             size="lg"
@@ -226,12 +227,21 @@ export default function Home() {
             align="center"
           >
             {showComingSoon ? <ComingSoon /> : null}
-            {showContractPreview ? (
+            {showNFTContractPreview ? (
               <Box width="80%" maxW="700px">
-                <img src="/contractPreview.png" />
+                <img src="/nft-preview.png" />
               </Box>
             ) : null}
-            {!showComingSoon && !showContractPreview ? (
+            {showFTContractPreview ? (
+              <Box width="80%" maxW="700px">
+                <img src="/token-preview.png" />
+              </Box>
+            ) : null}
+            {!(
+              showComingSoon ||
+              showNFTContractPreview ||
+              showFTContractPreview
+            ) ? (
               <Box w="60%" maxW="550px">
                 <img aria-hidden src="/hiroAscii.png" />
               </Box>
