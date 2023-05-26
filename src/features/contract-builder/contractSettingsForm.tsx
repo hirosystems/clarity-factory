@@ -16,6 +16,7 @@ interface FormProps {
   contractCopied: boolean;
   onChange: Function;
   handleCopyToClipboard: () => void;
+  handleDeploy: () => void;
 }
 
 const ContractSettingsForm: FC<FormProps> = ({
@@ -25,6 +26,7 @@ const ContractSettingsForm: FC<FormProps> = ({
   displayLarge,
   contractCopied,
   handleCopyToClipboard,
+  handleDeploy,
 }) => {
   let form = null;
   if (templateCase === Cases.Nft) {
@@ -64,7 +66,7 @@ const ContractSettingsForm: FC<FormProps> = ({
         >
           {contractCopied ? "Copied!" : "Copy"}
         </Button>
-        <Button leftIcon={<StacksIcon />} bg="gray.900">
+        <Button onClick={handleDeploy} leftIcon={<StacksIcon />} bg="gray.900">
           Deploy
         </Button>
       </Flex>

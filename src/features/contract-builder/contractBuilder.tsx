@@ -113,6 +113,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
                   displayLarge: !showOutput,
                   contractCopied,
                   handleCopyToClipboard,
+                  handleDeploy,
                 }}
               />
             </Box>
