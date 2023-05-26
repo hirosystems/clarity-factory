@@ -160,8 +160,13 @@ export default function buildNftSettings(userSettings: NFTTemplateSettings) {
   const allowListAddresses: string[] = [];
   if (hasAllowList) {
     for (const addr of mint?.["allow-list"]?.addresses || []) {
+      if (!addr) continue;
       allowListAddresses.push(
-        t($mapInsert, { map: "allow-list", key: `'${addr}`, value: "true" })
+        t($mapInsert, {
+          map: "allow-list",
+          key: `'${addr.toUpperCase()}`,
+          value: "true",
+        })
       );
     }
   }
