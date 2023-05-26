@@ -38,6 +38,7 @@ const FtForm: FC<FtFormProps> = ({ formData, onChange }) => {
             label="Token Ticker Name"
             value={get(formData, FIELDS.NAME)}
             onChange={getTextChangeHandler(FIELDS.NAME)}
+            isRequired
           />
           <Flex direction="column" gap="2">
             <FormField
@@ -52,9 +53,23 @@ const FtForm: FC<FtFormProps> = ({ formData, onChange }) => {
 
           <Flex direction="column" gap="2">
             <FormField
+              label="Max Supply"
+              value={get(formData, FIELDS.MAX_SUPPLY)}
+              onChange={getTextChangeHandler(FIELDS.MAX_SUPPLY)}
+            />
+            <InputInfoLabel>
+              Base URI for the FT metadata (see SIP-016). Typically starts with
+              &apos;https&apos;, &apos;ar&apos;, &apos;ipfs&apos;, or
+              &apos;sia&apos;.
+            </InputInfoLabel>
+          </Flex>
+
+          <Flex direction="column" gap="2">
+            <FormField
               label="Token Base URI"
               value={get(formData, FIELDS.TOKEN_URI_BASE)}
               onChange={getTextChangeHandler(FIELDS.TOKEN_URI_BASE)}
+              isRequired
             />
             <InputInfoLabel>
               Base URI for the FT metadata (see SIP-016). Typically starts with

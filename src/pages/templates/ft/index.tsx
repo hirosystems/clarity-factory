@@ -12,7 +12,9 @@ const NFTTemplate: NextPage = () => {
       <title>Hiro Builder: Build a Token contract</title>
       <ContractBuilder
         templateCase={Cases.Ft}
-        initialDataOverrides={name ? { general: { name } } : {}}
+        initialDataOverrides={
+          name ? { general: { name, fullname: `${name} Token` } } : {}
+        }
       />
     </>
   );
