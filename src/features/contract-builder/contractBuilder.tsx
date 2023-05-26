@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import cases, { Cases } from "./cases";
 import {
   Box,
+  Button,
   Flex,
   Modal,
   ModalBody,
@@ -93,6 +94,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
               position="fixed"
               left="0"
               top="0"
+              right="55%"
               bg="gray.700"
               zIndex="2"
             >
@@ -128,18 +130,17 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
         onClose={() => {
           setShowDeployModal(false);
         }}
-        size="xl"
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader pt="5" fontWeight="normal">
-            Deploy to the STX Blockchain
-          </ModalHeader>
           <ModalCloseButton mt="2" mr="2" />
           <ModalBody>
-            <Flex justify="center" mt="6" mb="12">
+            <Flex justify="center" my="12">
               <ComingSoon width="150px" />
             </Flex>
+            <Button variant="primary" bg="mint" mb="5" w="full">
+              Connect Hiro Wallet to Deploy
+            </Button>
           </ModalBody>
         </ModalContent>
       </Modal>

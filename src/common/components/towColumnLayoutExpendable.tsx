@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from "react";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, Tooltip } from "@chakra-ui/react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 
 interface TwoColumnLayoutExpendableProps {
@@ -17,7 +17,7 @@ const TwoColumnLayoutExpendable: FC<TwoColumnLayoutExpendableProps> = ({
 }) => {
   // when visible, make it lsightly more than half
   // to avoid horizontal scrolling in the code
-  const rightWidth = showOutput ? "55%" : "100px";
+  const rightWidth = showOutput ? "55%" : "162px";
 
   return (
     <Flex as="main" h="100vh">
@@ -36,7 +36,7 @@ const TwoColumnLayoutExpendable: FC<TwoColumnLayoutExpendableProps> = ({
             {showOutput ? (
               <Button
                 border="none"
-                bgColor="gray.700"
+                bgColor="gray.800"
                 color="gray.300"
                 marginY={4}
                 borderLeftRadius="none"
@@ -47,19 +47,29 @@ const TwoColumnLayoutExpendable: FC<TwoColumnLayoutExpendableProps> = ({
                 {"Hide code"}
               </Button>
             ) : (
-              <Button
-                border="none"
-                bgColor="gray.700"
-                color="gray.300"
-                marginY={4}
-                marginLeft={2}
-                outline="none"
-                onClick={toggleOutput}
-                leftIcon={<RiArrowLeftSLine />}
-              />
+              <Tooltip label="View code" placement="right">
+                <Button
+                  border="none"
+                  bgColor="gray.800"
+                  color="gray.300"
+                  my="4"
+                  borderLeftRadius="none"
+                  outline="none"
+                  onClick={toggleOutput}
+                  leftIcon={<RiArrowLeftSLine />}
+                >
+                  Code
+                </Button>
+              </Tooltip>
             )}
           </Box>
-          {showOutput ? right : null}
+          <Box
+            h="full"
+            pointerEvents={showOutput ? "auto" : "none"}
+            opacity={showOutput ? "1" : "0.2"}
+          >
+            {right}
+          </Box>
         </Flex>
       </Flex>
     </Flex>

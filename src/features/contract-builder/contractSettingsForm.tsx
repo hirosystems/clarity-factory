@@ -50,25 +50,41 @@ const ContractSettingsForm: FC<FormProps> = ({
       {form}
 
       {/* Copy/deploy buttons */}
-      <Flex gap="2" mt={2} justifyContent="right">
-        <Button
-          onClick={handleCopyToClipboard}
-          bg="gray.900"
-          display="inline-flex"
-          alignItems="center"
-          leftIcon={
-            contractCopied ? (
-              <Icon as={RiCheckLine} boxSize="4" />
-            ) : (
-              <Icon as={RiFileCopyLine} boxSize="4" />
-            )
-          }
-        >
-          {contractCopied ? "Copied!" : "Copy"}
-        </Button>
-        <Button onClick={handleDeploy} leftIcon={<StacksIcon />} bg="gray.900">
-          Deploy
-        </Button>
+      <Flex
+        justifyContent="left"
+        position="fixed"
+        left="0"
+        bottom="0"
+        right="55%"
+        bg="gray.700"
+        zIndex="1"
+      >
+        <Flex py="20px" pl="30px" gap="2">
+          <Button
+            onClick={handleCopyToClipboard}
+            bg="gray.900"
+            display="inline-flex"
+            alignItems="center"
+            leftIcon={
+              contractCopied ? (
+                <Icon as={RiCheckLine} boxSize="4" />
+              ) : (
+                <Icon as={RiFileCopyLine} boxSize="4" />
+              )
+            }
+          >
+            {contractCopied ? "Copied!" : "Copy Contract"}
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            bg="mint"
+            onClick={handleDeploy}
+            leftIcon={<StacksIcon />}
+          >
+            Deploy
+          </Button>
+        </Flex>
       </Flex>
     </Box>
   );

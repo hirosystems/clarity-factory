@@ -104,7 +104,13 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange, displayLarge }) => {
 
       <Flex direction={displayLarge ? "row" : "column"} gap={4}>
         {/* General Settings */}
-        <Flex width="full" direction="column" gap={4}>
+        <Flex
+          width={displayLarge ? "50%" : "full"}
+          flexGrow="0"
+          flexShrink="0"
+          direction="column"
+          gap={4}
+        >
           <FormSection label="General Settings" startExpanded>
             <Flex direction="column" gap="7">
               <FormField
@@ -188,7 +194,13 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange, displayLarge }) => {
           </FormSection>
         </Flex>
 
-        <Flex width="full" direction="column" gap={4}>
+        <Flex
+          width={displayLarge ? "50%" : "full"}
+          flexGrow="0"
+          flexShrink="0"
+          direction="column"
+          gap={4}
+        >
           {/* Currency Settings */}
           <FormSection
             label="Currency Settings"
