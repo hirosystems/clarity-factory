@@ -4,7 +4,7 @@ export const initialData: NFTTemplateSettings = {
   general: {
     name: "my-awesome-nft",
     "token-uri-base": {
-      value: "http://your-hosted-token-uri-base.com",
+      value: "ipfs://.../",
       updatable: false,
     },
   },

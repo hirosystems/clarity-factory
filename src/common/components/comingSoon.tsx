@@ -1,7 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { FC } from "react";
 
-const ComingSoon: FC = () => {
+interface ComingSoonProps {
+  width?: string;
+}
+const ComingSoon: FC<ComingSoonProps> = ({ width }) => {
   return (
     <Flex
       direction="column"
@@ -11,7 +14,7 @@ const ComingSoon: FC = () => {
       letterSpacing="0.19em"
       fontFamily="caption"
       gap="5"
-      w="200px"
+      w={width || "200px"}
     >
       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
         <img key={i} src={`/comingSoon/${i}.png`} />

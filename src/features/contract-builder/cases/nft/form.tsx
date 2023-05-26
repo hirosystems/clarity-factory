@@ -7,8 +7,9 @@ import { Flex, Heading, Icon, Tooltip } from "@chakra-ui/react";
 import InputInfoLabel from "../../../../common/components/inputInfoLabel";
 import CheckboxSquare from "../../../../common/components/checkboxSquare";
 import SwitchField from "../../../../common/components/switchField";
-import { AiOutlineQuestion, AiOutlineQuestionCircle } from "react-icons/ai";
+import { AiOutlineQuestionCircle } from "react-icons/ai";
 import ListField from "../../../../common/components/listField";
+import useFormHandlers from "../../../../common/hooks/useFormHandlers";
 
 const FIELDS = {
   NAME: "general.name",
@@ -49,39 +50,8 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
   const [showAllowAtBlockHeightSection, setShowAllowAtBlockHeightSection] =
     useState(false);
 
-  // Handle text input changes
-  const getTextChangeHandler = (field) => {
-    return (e) => {
-      // Probably can be optimized later
-      const newFormData = cloneDeep(formData);
-      const newValue = e.target.value;
-      if (!newValue) {
-        // Clear if empty
-        unset(newFormData, field);
-      } else {
-        set(newFormData, field, newValue);
-      }
-      onChange(newFormData);
-    };
-  };
-
-  // Handle switch/checkbox input changes
-  const getSwitchChangeHandler = (field) => {
-    return (e) => {
-      const newFormData = cloneDeep(formData);
-      set(newFormData, field, e.target.checked);
-      onChange(newFormData);
-    };
-  };
-
-  // Handle plain input changes
-  const getChangeHandler = (field) => {
-    return (newVal) => {
-      const newFormData = cloneDeep(formData);
-      set(newFormData, field, newVal);
-      onChange(newFormData);
-    };
-  };
+  const { getChangeHandler, getSwitchChangeHandler, getTextChangeHandler } =
+    useFormHandlers(formData, onChange);
 
   /* Special form side effects */
 

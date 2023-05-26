@@ -17,25 +17,36 @@ export default function Home() {
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [showContractPreview, setShowContractPreview] = useState(false);
 
-  const [creatingNft, setCreatingNft] = useState(false);
-  const [nftName, setNftName] = useState("");
+  const [creatingContract, setCreatingContract] = useState(false);
+  const [creatingTemplate, setCreatingTemplate] = useState<"nft" | "ft" | null>(
+    null
+  );
 
-  const handleCreateNftClick = () => {
-    setCreatingNft(true);
-    setNftName("");
+  const [contractName, setContractName] = useState("");
+
+  const handleCreateContractClick = (template) => {
+    setCreatingContract(true);
+    setCreatingTemplate(template);
+    setContractName("");
   };
 
-  const handleNftNameChange = (e) => {
-    setNftName(e.target.value);
+  const handleContractNameChange = (e) => {
+    setContractName(e.target.value);
   };
+
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  const getRandomCharacter = () =>
+    alphabet[Math.floor(Math.random() * alphabet.length)];
 
   const handleGenerateRandomName = () => {
-    setNftName(
-      uniqueNamesGenerator({
-        dictionaries: [adjectives, colors, animals],
-        separator: "-",
-      })
-    );
+    let randomName =
+      creatingTemplate === "nft"
+        ? uniqueNamesGenerator({
+            dictionaries: [adjectives, colors, animals],
+            separator: "-",
+          })
+        : `${getRandomCharacter()}${getRandomCharacter()}${getRandomCharacter()}`.toUpperCase();
+    setContractName(randomName);
   };
 
   return (
@@ -57,7 +68,7 @@ export default function Home() {
               <Flex direction="column" gap="12" align="center">
                 <Flex direction="column" gap="6" align="center">
                   <Box w="400px">
-                    <Link href="/" onClick={() => setCreatingNft(false)}>
+                    <Link href="/" onClick={() => setCreatingContract(false)}>
                       <img aria-hidden src="/hiroMakerLogo.png" />
                     </Link>
                   </Box>
@@ -79,16 +90,22 @@ export default function Home() {
                   align="center"
                   w="md"
                 >
-                  {creatingNft ? (
+                  {creatingContract ? (
                     <>
                       <Box color="gray.300" fontFamily="caption" fontSize="lg">
-                        Name your NFT Smart Contract
+                        {creatingTemplate === "nft"
+                          ? "Name your NFT Smart Contract"
+                          : "Name your Token's Ticker"}
                       </Box>
                       <Flex direction="column" gap="4" w="full">
                         <Input
-                          placeholder="my-awesome-nft"
-                          value={nftName}
-                          onChange={handleNftNameChange}
+                          placeholder={
+                            creatingTemplate === "nft"
+                              ? "my-awesome-nft"
+                              : "HAI"
+                          }
+                          value={contractName}
+                          onChange={handleContractNameChange}
                         />
                         <Button
                           variant="link"
@@ -101,8 +118,8 @@ export default function Home() {
                           mt="7"
                           variant="primary"
                           as={Link}
-                          href={`/templates/nft${
-                            nftName ? `?name=${nftName}` : ""
+                          href={`/templates/${creatingTemplate}${
+                            contractName ? `?name=${contractName}` : ""
                           }`}
                         >
                           Create project
@@ -117,21 +134,20 @@ export default function Home() {
                       <Flex direction="column" gap="2" w="full">
                         <Button
                           size="lg"
-                          onClick={handleCreateNftClick}
+                          onClick={() => handleCreateContractClick("nft")}
                           onMouseEnter={() => setShowContractPreview(true)}
                           onMouseLeave={() => setShowContractPreview(false)}
                         >
                           NFT Smart Contract
                         </Button>
-                        <Tooltip label="Coming Soon" placement="right">
-                          <Button
-                            size="lg"
-                            onMouseEnter={() => setShowComingSoon(true)}
-                            onMouseLeave={() => setShowComingSoon(false)}
-                          >
-                            Token Contract
-                          </Button>
-                        </Tooltip>
+                        <Button
+                          size="lg"
+                          onClick={() => handleCreateContractClick("ft")}
+                          onMouseEnter={() => setShowContractPreview(true)}
+                          onMouseLeave={() => setShowContractPreview(false)}
+                        >
+                          Token Contract
+                        </Button>
                         <Tooltip label="Coming Soon" placement="right">
                           <Button
                             size="lg"
