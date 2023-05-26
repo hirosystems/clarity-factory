@@ -53,7 +53,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
       if (templateCase === Cases.Nft) {
         contract = buildSmartContract("nft", formData).contract;
       } else if (templateCase === Cases.Ft) {
-        contract = buildSmartContract("nft", formData).contract;
+        contract = buildSmartContract("ft", formData).contract;
       } else {
         throw new Error("Unsupported template type");
       }
