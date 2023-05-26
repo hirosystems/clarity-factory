@@ -42,10 +42,11 @@ const FIELDS = {
 
 interface NftFormProps {
   formData: NFTTemplateSettings;
+  displayLarge: boolean;
   onChange: Function;
 }
 
-const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
+const NftForm: FC<NftFormProps> = ({ formData, onChange, displayLarge }) => {
   const [showEarlyBirdSection, setShowEarlyBirdSection] = useState(false);
   const [showAllowAtBlockHeightSection, setShowAllowAtBlockHeightSection] =
     useState(false);
@@ -100,269 +101,291 @@ const NftForm: FC<NftFormProps> = ({ formData, onChange }) => {
   return (
     <Flex direction="column" gap="4">
       <Heading size="4">Build Your NFT</Heading>
-      {/* General Settings */}
-      <FormSection label="General Settings" startExpanded>
-        <Flex direction="column" gap="7">
-          <FormField
-            label="Name"
-            value={get(formData, FIELDS.NAME)}
-            onChange={getTextChangeHandler(FIELDS.NAME)}
-          />
 
-          <Flex direction="column" gap="2">
-            <FormField
-              label="Token Base URI"
-              value={get(formData, FIELDS.TOKEN_URI_BASE)}
-              onChange={getTextChangeHandler(FIELDS.TOKEN_URI_BASE)}
-            />
-            <InputInfoLabel>Base URI for the NFT image.</InputInfoLabel>
-          </Flex>
-
-          <SwitchField
-            id="uri-updatable"
-            isChecked={get(formData, FIELDS.TOKEN_URI_BASE_UPDATABLE)}
-            onChange={getSwitchChangeHandler(FIELDS.TOKEN_URI_BASE_UPDATABLE)}
-            label="Base URI can be updated after deploy"
-          />
-
-          <Flex direction="column" gap="2">
-            <SwitchField
-              id="contract-owner"
-              isChecked={get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-              onChange={getSwitchChangeHandler(FIELDS.ENABLE_CONTRACT_OWNER)}
-              label="Enable Contract Owner"
-            />
-            <InputInfoLabel>
-              The contract owner feature enables administration features, such
-              as changing some of the contract&apos;s parameters after it is
-              deployed.
-            </InputInfoLabel>
-          </Flex>
-
-          {/* Show contract owner fields conditionally */}
-          {get(formData, FIELDS.ENABLE_CONTRACT_OWNER) ? (
-            <>
+      <Flex direction={displayLarge ? "row" : "column"} gap={4}>
+        {/* General Settings */}
+        <Flex width="full" direction="column" gap={4}>
+          <FormSection label="General Settings" startExpanded>
+            <Flex direction="column" gap="7">
               <FormField
-                label="Contract Owner STX Address"
-                value={get(formData, FIELDS.CONTRACT_OWNER)}
-                onChange={getTextChangeHandler(FIELDS.CONTRACT_OWNER)}
-                isRequired
+                label="Name"
+                value={get(formData, FIELDS.NAME)}
+                onChange={getTextChangeHandler(FIELDS.NAME)}
               />
-              <SwitchField
-                id="contract-owner-updatable"
-                isChecked={get(formData, FIELDS.CONTRACT_OWNER_UPDATABLE)}
-                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                onChange={getSwitchChangeHandler(
-                  FIELDS.CONTRACT_OWNER_UPDATABLE
-                )}
-                label="Owner can be updated after deploy"
-              />
-            </>
-          ) : null}
 
-          <Flex direction="column" gap="2">
-            <SwitchField
-              id="freeze-metadata"
-              isChecked={get(formData, FIELDS.ENABLE_FREEZE_METADATA)}
-              isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-              disabledMessage="Contract Owner must be enabled"
-              onChange={getSwitchChangeHandler(FIELDS.ENABLE_FREEZE_METADATA)}
-              label="Include a function to freeze metadata"
-            />
-            <InputInfoLabel>
-              The contract owner will be able to call this function to prevent
-              any future changes to the token URI.
-            </InputInfoLabel>
-          </Flex>
-        </Flex>
-      </FormSection>
-
-      {/* Currency Settings */}
-      <FormSection label="Currency Settings">
-        <Flex direction="column" gap="7">
-          <Flex gap="2">
-            <CheckboxSquare
-              label="Accept STX"
-              isChecked={get(formData, FIELDS.ACCEPT_STX)}
-              onChange={getSwitchChangeHandler(FIELDS.ACCEPT_STX)}
-            />
-            <CheckboxSquare
-              label="Accept MIA"
-              isChecked={get(formData, FIELDS.ACCEPT_MIA)}
-              onChange={getSwitchChangeHandler(FIELDS.ACCEPT_MIA)}
-            />
-            <CheckboxSquare
-              label="Accept NYC"
-              isChecked={get(formData, FIELDS.ACCEPT_NYC)}
-              onChange={getSwitchChangeHandler(FIELDS.ACCEPT_NYC)}
-            />
-          </Flex>
-
-          {/* STX settings */}
-          {get(formData, FIELDS.ACCEPT_STX) ? (
-            <Flex direction="column" gap="3">
-              <Heading size="6">STX Settings</Heading>
-              <FormField
-                label="STX Price"
-                value={get(formData, FIELDS.STX_PRICE)}
-                onChange={getTextChangeHandler(FIELDS.STX_PRICE)}
-                isRequired
-              />
-              <SwitchField
-                id="stx-price-updatable"
-                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                disabledMessage="Contract Owner must be enabled"
-                isChecked={get(formData, FIELDS.STX_PRICE_UPDATABLE)}
-                onChange={getSwitchChangeHandler(FIELDS.STX_PRICE_UPDATABLE)}
-                label="Value can be updated after deploy"
-              />
-            </Flex>
-          ) : null}
-
-          {/* MIA settings */}
-          {get(formData, FIELDS.ACCEPT_MIA) ? (
-            <Flex direction="column" gap="3">
-              <Heading size="6">MIA Settings</Heading>
-              <FormField
-                label="MIA Price"
-                value={get(formData, FIELDS.MIA_PRICE)}
-                onChange={getTextChangeHandler(FIELDS.MIA_PRICE)}
-                isRequired
-              />
-              <SwitchField
-                id="mia-price-updatable"
-                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                isChecked={get(formData, FIELDS.MIA_PRICE_UPDATABLE)}
-                onChange={getSwitchChangeHandler(FIELDS.MIA_PRICE_UPDATABLE)}
-                disabledMessage="Contract Owner must be enabled"
-                label="Value can be updated after deploy"
-              />
-            </Flex>
-          ) : null}
-
-          {/* NYC settings */}
-          {get(formData, FIELDS.ACCEPT_NYC) ? (
-            <Flex direction="column" gap="3">
-              <Heading size="6">NYC Settings</Heading>
-              <FormField
-                label="NYC Price"
-                value={get(formData, FIELDS.NYC_PRICE)}
-                onChange={getTextChangeHandler(FIELDS.NYC_PRICE)}
-                isRequired
-              />
-              <SwitchField
-                id="nyc-price-updatable"
-                isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                isChecked={get(formData, FIELDS.NYC_PRICE_UPDATABLE)}
-                onChange={getSwitchChangeHandler(FIELDS.NYC_PRICE_UPDATABLE)}
-                disabledMessage="Contract Owner must be enabled"
-                label="Value can be updated after deploy"
-              />
-            </Flex>
-          ) : null}
-        </Flex>
-      </FormSection>
-
-      {/* Mint Settings */}
-      <FormSection label="Mint Settings">
-        <Flex direction="column" gap="8">
-          {/* Mint Limit */}
-          <Flex direction="column" gap="3">
-            <Flex direction="column" gap="2">
-              <FormField
-                label="Mint Limit"
-                value={get(formData, FIELDS.MINT_LIMIT)}
-                onChange={getTextChangeHandler(FIELDS.MINT_LIMIT)}
-              />
-              <InputInfoLabel>
-                Mint limit per STX address. Leave empty for unlimited.
-              </InputInfoLabel>
-            </Flex>
-            <SwitchField
-              id="mint-limit-updatable"
-              isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-              isChecked={get(formData, FIELDS.MINT_LIMIT_UPDATABLE)}
-              onChange={getSwitchChangeHandler(FIELDS.MINT_LIMIT_UPDATABLE)}
-              disabledMessage="Contract Owner must be enabled"
-              label="Mint limit can be updated after deploy"
-            />
-          </Flex>
-
-          {/* Early bird list */}
-          <Flex direction="column" gap="4">
-            <Flex gap="2" align="center">
-              <CheckboxSquare
-                label="Enable Early Bird Access"
-                isChecked={showEarlyBirdSection}
-                onChange={(e) => {
-                  setShowEarlyBirdSection(e.target.checked);
-                }}
-              />
-              <Tooltip
-                placement="right"
-                label="Allow addresses to claim early access to your NFT."
-              >
-                <Flex align="center">
-                  <Icon as={AiOutlineQuestionCircle} boxSize="4" />
-                </Flex>
-              </Tooltip>
-            </Flex>
-            {showEarlyBirdSection ? (
-              <ListField
-                label="Allowed STX Address"
-                value={get(formData, FIELDS.ALLOW_LIST_ADDRESSES)}
-                onChange={getChangeHandler(FIELDS.ALLOW_LIST_ADDRESSES)}
-              />
-            ) : null}
-          </Flex>
-
-          {/* Allow at block height */}
-          <Flex direction="column" gap="4">
-            <Flex gap="2" align="center">
-              <CheckboxSquare
-                label="Allow all at block height"
-                isChecked={showAllowAtBlockHeightSection}
-                onChange={(e) => {
-                  setShowAllowAtBlockHeightSection(e.target.checked);
-                }}
-              />
-              <Tooltip
-                placement="right"
-                label="Allow everyone to mint from this block height. Leave empty to disable mint for all."
-              >
-                <Flex align="center">
-                  <Icon as={AiOutlineQuestionCircle} boxSize="4" />
-                </Flex>
-              </Tooltip>
-            </Flex>
-            {showAllowAtBlockHeightSection ? (
-              <Flex direction="column" gap="4">
+              <Flex direction="column" gap="2">
                 <FormField
-                  label="Block height"
-                  isRequired
-                  value={get(formData, FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT)}
-                  onChange={getTextChangeHandler(
-                    FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT
-                  )}
+                  label="Token Base URI"
+                  value={get(formData, FIELDS.TOKEN_URI_BASE)}
+                  onChange={getTextChangeHandler(FIELDS.TOKEN_URI_BASE)}
                 />
+                <InputInfoLabel>Base URI for the NFT image.</InputInfoLabel>
+              </Flex>
+
+              <SwitchField
+                id="uri-updatable"
+                isChecked={get(formData, FIELDS.TOKEN_URI_BASE_UPDATABLE)}
+                onChange={getSwitchChangeHandler(
+                  FIELDS.TOKEN_URI_BASE_UPDATABLE
+                )}
+                label="Base URI can be updated after deploy"
+              />
+
+              <Flex direction="column" gap="2">
                 <SwitchField
-                  id="block-height-updatable"
-                  isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
-                  isChecked={get(
-                    formData,
-                    FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE
-                  )}
+                  id="contract-owner"
+                  isChecked={get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
                   onChange={getSwitchChangeHandler(
-                    FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE
+                    FIELDS.ENABLE_CONTRACT_OWNER
                   )}
+                  label="Enable Contract Owner"
+                />
+                <InputInfoLabel>
+                  The contract owner feature enables administration features,
+                  such as changing some of the contract&apos;s parameters after
+                  it is deployed.
+                </InputInfoLabel>
+              </Flex>
+
+              {/* Show contract owner fields conditionally */}
+              {get(formData, FIELDS.ENABLE_CONTRACT_OWNER) ? (
+                <>
+                  <FormField
+                    label="Contract Owner STX Address"
+                    value={get(formData, FIELDS.CONTRACT_OWNER)}
+                    onChange={getTextChangeHandler(FIELDS.CONTRACT_OWNER)}
+                    isRequired
+                  />
+                  <SwitchField
+                    id="contract-owner-updatable"
+                    isChecked={get(formData, FIELDS.CONTRACT_OWNER_UPDATABLE)}
+                    isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                    onChange={getSwitchChangeHandler(
+                      FIELDS.CONTRACT_OWNER_UPDATABLE
+                    )}
+                    label="Owner can be updated after deploy"
+                  />
+                </>
+              ) : null}
+
+              <Flex direction="column" gap="2">
+                <SwitchField
+                  id="freeze-metadata"
+                  isChecked={get(formData, FIELDS.ENABLE_FREEZE_METADATA)}
+                  isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
                   disabledMessage="Contract Owner must be enabled"
-                  label="Block height can be updated after deploy"
+                  onChange={getSwitchChangeHandler(
+                    FIELDS.ENABLE_FREEZE_METADATA
+                  )}
+                  label="Include a function to freeze metadata"
+                />
+                <InputInfoLabel>
+                  The contract owner will be able to call this function to
+                  prevent any future changes to the token URI.
+                </InputInfoLabel>
+              </Flex>
+            </Flex>
+          </FormSection>
+        </Flex>
+
+        <Flex width="full" direction="column" gap={4}>
+          {/* Currency Settings */}
+          <FormSection
+            label="Currency Settings"
+            startExpanded={displayLarge ? true : false}
+          >
+            <Flex direction="column" gap="7">
+              <Flex gap="2">
+                <CheckboxSquare
+                  label="Accept STX"
+                  isChecked={get(formData, FIELDS.ACCEPT_STX)}
+                  onChange={getSwitchChangeHandler(FIELDS.ACCEPT_STX)}
+                />
+                <CheckboxSquare
+                  label="Accept MIA"
+                  isChecked={get(formData, FIELDS.ACCEPT_MIA)}
+                  onChange={getSwitchChangeHandler(FIELDS.ACCEPT_MIA)}
+                />
+                <CheckboxSquare
+                  label="Accept NYC"
+                  isChecked={get(formData, FIELDS.ACCEPT_NYC)}
+                  onChange={getSwitchChangeHandler(FIELDS.ACCEPT_NYC)}
                 />
               </Flex>
-            ) : null}
-          </Flex>
+
+              {/* STX settings */}
+              {get(formData, FIELDS.ACCEPT_STX) ? (
+                <Flex direction="column" gap="3">
+                  <Heading size="6">STX Settings</Heading>
+                  <FormField
+                    label="STX Price"
+                    value={get(formData, FIELDS.STX_PRICE)}
+                    onChange={getTextChangeHandler(FIELDS.STX_PRICE)}
+                    isRequired
+                  />
+                  <SwitchField
+                    id="stx-price-updatable"
+                    isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                    disabledMessage="Contract Owner must be enabled"
+                    isChecked={get(formData, FIELDS.STX_PRICE_UPDATABLE)}
+                    onChange={getSwitchChangeHandler(
+                      FIELDS.STX_PRICE_UPDATABLE
+                    )}
+                    label="Value can be updated after deploy"
+                  />
+                </Flex>
+              ) : null}
+
+              {/* MIA settings */}
+              {get(formData, FIELDS.ACCEPT_MIA) ? (
+                <Flex direction="column" gap="3">
+                  <Heading size="6">MIA Settings</Heading>
+                  <FormField
+                    label="MIA Price"
+                    value={get(formData, FIELDS.MIA_PRICE)}
+                    onChange={getTextChangeHandler(FIELDS.MIA_PRICE)}
+                    isRequired
+                  />
+                  <SwitchField
+                    id="mia-price-updatable"
+                    isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                    isChecked={get(formData, FIELDS.MIA_PRICE_UPDATABLE)}
+                    onChange={getSwitchChangeHandler(
+                      FIELDS.MIA_PRICE_UPDATABLE
+                    )}
+                    disabledMessage="Contract Owner must be enabled"
+                    label="Value can be updated after deploy"
+                  />
+                </Flex>
+              ) : null}
+
+              {/* NYC settings */}
+              {get(formData, FIELDS.ACCEPT_NYC) ? (
+                <Flex direction="column" gap="3">
+                  <Heading size="6">NYC Settings</Heading>
+                  <FormField
+                    label="NYC Price"
+                    value={get(formData, FIELDS.NYC_PRICE)}
+                    onChange={getTextChangeHandler(FIELDS.NYC_PRICE)}
+                    isRequired
+                  />
+                  <SwitchField
+                    id="nyc-price-updatable"
+                    isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                    isChecked={get(formData, FIELDS.NYC_PRICE_UPDATABLE)}
+                    onChange={getSwitchChangeHandler(
+                      FIELDS.NYC_PRICE_UPDATABLE
+                    )}
+                    disabledMessage="Contract Owner must be enabled"
+                    label="Value can be updated after deploy"
+                  />
+                </Flex>
+              ) : null}
+            </Flex>
+          </FormSection>
+
+          {/* Mint Settings */}
+          <FormSection label="Mint Settings">
+            <Flex direction="column" gap="8">
+              {/* Mint Limit */}
+              <Flex direction="column" gap="3">
+                <Flex direction="column" gap="2">
+                  <FormField
+                    label="Mint Limit"
+                    value={get(formData, FIELDS.MINT_LIMIT)}
+                    onChange={getTextChangeHandler(FIELDS.MINT_LIMIT)}
+                  />
+                  <InputInfoLabel>
+                    Mint limit per STX address. Leave empty for unlimited.
+                  </InputInfoLabel>
+                </Flex>
+                <SwitchField
+                  id="mint-limit-updatable"
+                  isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                  isChecked={get(formData, FIELDS.MINT_LIMIT_UPDATABLE)}
+                  onChange={getSwitchChangeHandler(FIELDS.MINT_LIMIT_UPDATABLE)}
+                  disabledMessage="Contract Owner must be enabled"
+                  label="Mint limit can be updated after deploy"
+                />
+              </Flex>
+
+              {/* Early bird list */}
+              <Flex direction="column" gap="4">
+                <Flex gap="2" align="center">
+                  <CheckboxSquare
+                    label="Enable Early Bird Access"
+                    isChecked={showEarlyBirdSection}
+                    onChange={(e) => {
+                      setShowEarlyBirdSection(e.target.checked);
+                    }}
+                  />
+                  <Tooltip
+                    placement="right"
+                    label="Allow addresses to claim early access to your NFT."
+                  >
+                    <Flex align="center">
+                      <Icon as={AiOutlineQuestionCircle} boxSize="4" />
+                    </Flex>
+                  </Tooltip>
+                </Flex>
+                {showEarlyBirdSection ? (
+                  <ListField
+                    label="Allowed STX Address"
+                    value={get(formData, FIELDS.ALLOW_LIST_ADDRESSES)}
+                    onChange={getChangeHandler(FIELDS.ALLOW_LIST_ADDRESSES)}
+                  />
+                ) : null}
+              </Flex>
+
+              {/* Allow at block height */}
+              <Flex direction="column" gap="4">
+                <Flex gap="2" align="center">
+                  <CheckboxSquare
+                    label="Allow all at block height"
+                    isChecked={showAllowAtBlockHeightSection}
+                    onChange={(e) => {
+                      setShowAllowAtBlockHeightSection(e.target.checked);
+                    }}
+                  />
+                  <Tooltip
+                    placement="right"
+                    label="Allow everyone to mint from this block height. Leave empty to disable mint for all."
+                  >
+                    <Flex align="center">
+                      <Icon as={AiOutlineQuestionCircle} boxSize="4" />
+                    </Flex>
+                  </Tooltip>
+                </Flex>
+                {showAllowAtBlockHeightSection ? (
+                  <Flex direction="column" gap="4">
+                    <FormField
+                      label="Block height"
+                      isRequired
+                      value={get(formData, FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT)}
+                      onChange={getTextChangeHandler(
+                        FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT
+                      )}
+                    />
+                    <SwitchField
+                      id="block-height-updatable"
+                      isDisabled={!get(formData, FIELDS.ENABLE_CONTRACT_OWNER)}
+                      isChecked={get(
+                        formData,
+                        FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE
+                      )}
+                      onChange={getSwitchChangeHandler(
+                        FIELDS.ALLOW_ALL_AT_BLOCK_HEIGHT_UPDATABLE
+                      )}
+                      disabledMessage="Contract Owner must be enabled"
+                      label="Block height can be updated after deploy"
+                    />
+                  </Flex>
+                ) : null}
+              </Flex>
+            </Flex>
+          </FormSection>
         </Flex>
-      </FormSection>
+      </Flex>
     </Flex>
   );
 };

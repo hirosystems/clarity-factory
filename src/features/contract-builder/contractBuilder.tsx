@@ -2,9 +2,7 @@ import { FC, useEffect, useState } from "react";
 import cases, { Cases } from "./cases";
 import {
   Box,
-  Button,
   Flex,
-  Icon,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,14 +13,12 @@ import {
 import ContractSettingsForm from "./contractSettingsForm";
 import ContractOutput from "./contractOutput";
 import { buildSmartContract } from "../../../clarity-factory/dist/main";
-import TwoColumnLayout from "../../common/components/twoColumnLayout";
 import { NFTTemplateSettings } from "../../../clarity-factory/src/types/contract-settings-nft.schema";
 import { FTTemplateSettings } from "../../../clarity-factory/src/types/contract-settings-ft.schema";
 import { merge } from "lodash";
 import Link from "next/link";
-import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
-import StacksIcon from "../../common/components/StacksIcon";
 import ComingSoon from "../../common/components/comingSoon";
+import TwoColumnLayoutExpendable from "../../common/components/towColumnLayoutExpendable";
 
 interface ContractBuilderProps {
   templateCase: Cases;
@@ -36,6 +32,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
   const [contractBody, setContractBody] = useState("");
   const [contractCopied, setContractCopied] = useState(false);
   const [showDeployModal, setShowDeployModal] = useState(false);
+  const [showOutput, setShowOutput] = useState(false);
 
   const { initialData } = cases[templateCase];
   const [formData, setFormData] = useState<
@@ -58,6 +55,7 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
         throw new Error("Unsupported template type");
       }
     } catch (err) {
+      // contract = contractBody;
       console.log({ err });
     }
     setContractBody(contract);
@@ -75,13 +73,19 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
     setShowDeployModal(true);
   };
 
+  const toggleOutput = () => {
+    setShowOutput(!showOutput);
+  };
+
   useEffect(() => {
     onFormChange(merge(initialData, initialDataOverrides));
   }, [initialDataOverrides]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
-      <TwoColumnLayout
+      <TwoColumnLayoutExpendable
+        showOutput={showOutput}
+        toggleOutput={toggleOutput}
         left={
           <Box p="4" pr="0" w="full">
             <Box
@@ -89,7 +93,6 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
               position="fixed"
               left="0"
               top="0"
-              right="50%"
               bg="gray.700"
               zIndex="2"
             >
@@ -103,37 +106,20 @@ const ContractBuilder: FC<ContractBuilderProps> = ({
             </Box>
             <Box mt="14" w="full">
               <ContractSettingsForm
-                templateCase={templateCase}
-                formData={formData}
-                onChange={onFormChange}
+                {...{
+                  templateCase,
+                  formData,
+                  onChange: onFormChange,
+                  displayLarge: !showOutput,
+                  contractCopied,
+                  handleCopyToClipboard,
+                }}
               />
             </Box>
           </Box>
         }
         right={<ContractOutput contractBody={contractBody} />}
       />
-
-      {/* Copy/deploy buttons */}
-      <Flex position="fixed" right="38px" bottom="38px" gap="2">
-        <Button
-          onClick={handleCopyToClipboard}
-          bg="gray.900"
-          display="inline-flex"
-          alignItems="center"
-          leftIcon={
-            contractCopied ? (
-              <Icon as={RiCheckLine} boxSize="4" />
-            ) : (
-              <Icon as={RiFileCopyLine} boxSize="4" />
-            )
-          }
-        >
-          {contractCopied ? "Copied!" : "Copy"}
-        </Button>
-        <Button onClick={handleDeploy} leftIcon={<StacksIcon />} bg="gray.900">
-          Deploy
-        </Button>
-      </Flex>
 
       {/* Deploy modal */}
       <Modal

@@ -1,4 +1,4 @@
-import { Code, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { FC, useCallback, useState } from "react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { claritySyntax } from "../../common/editor-config/claritySyntax";
@@ -28,7 +28,7 @@ const ContractOutput: FC<ContractOutputProps> = ({ contractBody }) => {
   );
 
   return (
-    <Flex w="full" h="auto">
+    <Box w="full" h="full" bg="gray.900" borderRadius="md">
       <Editor
         beforeMount={handleEditorWillMount}
         onMount={(editor) => {
@@ -49,7 +49,7 @@ const ContractOutput: FC<ContractOutputProps> = ({ contractBody }) => {
           },
         }}
       />
-    </Flex>
+    </Box>
   );
 };
 
