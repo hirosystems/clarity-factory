@@ -89,6 +89,8 @@ export default function Home() {
                   borderRadius="md"
                   align="center"
                   w="md"
+                  // fixed height to prevent layout flicker when switching
+                  height={308}
                 >
                   {creatingContract ? (
                     <>
@@ -131,32 +133,43 @@ export default function Home() {
                       <Box color="gray.300" fontFamily="caption" fontSize="lg">
                         Choose your starter
                       </Box>
-                      <Flex direction="column" gap="2" w="full">
-                        <Button
-                          size="lg"
-                          onClick={() => handleCreateContractClick("nft")}
+                      <Flex direction="column" w="full">
+                        <div
                           onMouseEnter={() => setShowContractPreview(true)}
                           onMouseLeave={() => setShowContractPreview(false)}
                         >
-                          NFT Smart Contract
-                        </Button>
-                        <Button
-                          size="lg"
-                          onClick={() => handleCreateContractClick("ft")}
-                          onMouseEnter={() => setShowContractPreview(true)}
-                          onMouseLeave={() => setShowContractPreview(false)}
-                        >
-                          Token Contract
-                        </Button>
-                        <Tooltip label="Coming Soon" placement="right">
                           <Button
                             size="lg"
-                            onMouseEnter={() => setShowComingSoon(true)}
-                            onMouseLeave={() => setShowComingSoon(false)}
+                            onClick={() => handleCreateContractClick("nft")}
+                            w="full"
+                            marginBottom={2}
                           >
-                            Decentralized Chat App
+                            NFT Smart Contract
                           </Button>
-                        </Tooltip>
+                        </div>
+                        <div
+                          onMouseEnter={() => setShowContractPreview(true)}
+                          onMouseLeave={() => setShowContractPreview(false)}
+                        >
+                          <Button
+                            size="lg"
+                            onClick={() => handleCreateContractClick("ft")}
+                            w="full"
+                            marginBottom={2}
+                          >
+                            Token Contract
+                          </Button>
+                        </div>
+                        <div
+                          onMouseEnter={() => setShowComingSoon(true)}
+                          onMouseLeave={() => setShowComingSoon(false)}
+                        >
+                          <Tooltip label="Coming Soon" placement="right">
+                            <Button size="lg" w="full" marginBottom={2}>
+                              Decentralized Chat App
+                            </Button>
+                          </Tooltip>
+                        </div>
                       </Flex>
                     </>
                   )}
